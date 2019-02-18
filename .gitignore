@@ -1,3 +1,4 @@
 # Spinzed's files
 .vscode/
 test/
+*.code-workspace
