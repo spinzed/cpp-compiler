@@ -77,7 +77,7 @@ function checkForDown(event)
 
                 for(var i = 0; i < splitarr.length; i++)
                 {
-                    input.value+=splitarr[i];
+                    input.value += splitarr[i];
                 }
 
                 loadspan.parentNode.removeChild(loadspan);
