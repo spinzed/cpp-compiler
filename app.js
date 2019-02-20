@@ -1,12 +1,15 @@
 const editor = document.getElementById("editor");
 const input = document.getElementById("input");
-const text = document.getElementById("text");
-var ric = 1;
+const rows = document.getElementById("rows");
+var rowsouter = document.getElementById("rowsouter1");
+var rowdiv = document.getElementById("row1")
+var row = 1;
+var column = 1;
 
 function main()
 {
-    input.addEventListener("keydown", checkForDown)
-    input.addEventListener("keyup", checkForUp)
+    input.addEventListener("keydown", checkForDown);
+    input.addEventListener("keyup", checkForUp);
 }
 
 function checkForDown(event)
@@ -18,19 +21,57 @@ function checkForDown(event)
 
         input.value="";
     }
+    if(event.keyCode==13)
+    {
+        event.preventDefault();
+
+        let newouterrow = document.createElement("div");
+        newouterrow.classList.add("rowsouter");
+        newouterrow.id = "rowsouter" + (row + 1);
+
+        let newrow = document.createElement("div");
+        newrow.classList.add("rows");
+        newrow.id = "row" + (row + 1);
+
+        rows.appendChild(newouterrow);
+        newouterrow.appendChild(newrow);
+
+        input.parentNode.removeChild(input);
+        newouterrow.appendChild(input);
+
+        column = 1;
+        rowsouter = newouterrow;
+        rowdiv = newrow;
+        row++;
+    }
     if(event.keyCode==8)
     {
         if(input.value=="")
         {
-            event.preventDefault();
-            let loadspan = document.getElementById(ric - 1);
-            let splitarr = loadspan.innerHTML.split("&nbsp;")
-            for(var i = 0; i < splitarr.length; i++)
+            if(column == 1)
             {
-                input.value+=splitarr[i];
+                row--;
+                rowsouter.parentNode.removeChild(rowsouter);
+                rowdiv = document.getElementById("row" + row);
+                rowsouter = document.getElementById("rowsouter" + row);
+                rowsouter.appendChild(input);
+
             }
-            loadspan.parentNode.removeChild(loadspan);
-            ric--;
+            else
+            {
+                event.preventDefault();
+
+                let loadspan = document.getElementById(row + "_" + (column - 1));
+                let splitarr = loadspan.innerHTML.split("&nbsp;")
+
+                for(var i = 0; i < splitarr.length; i++)
+                {
+                    input.value+=splitarr[i];
+                }
+
+                loadspan.parentNode.removeChild(loadspan);
+                column--;
+            }
         }
     }
 }
@@ -56,9 +97,9 @@ function makeSpan(HTML, type, space = true)
     }
     span.classList.add("textspan")
     span.classList.add(type)
-    span.id = ric;
-    text.appendChild(span);
-    ric+=1;
+    span.id = row + "_" + column;
+    rowdiv.appendChild(span);
+    column+=1;
 }
 
 function refractor()
@@ -89,6 +130,7 @@ function getType(variable)
 {
     switch (variable)
     {
+        case "var":
         case "int":
         case "bool":
         case "str":
@@ -97,6 +139,22 @@ function getType(variable)
         case "while":
         case "#include":
             return "keyword";
+        case "0":
+        case "1":
+        case "2":
+        case "3":
+        case "4":
+        case "5":
+        case "6":
+        case "7":
+        case "8":
+        case "9":
+            return "number";
+        case ":":
+        case "=":
+        case "<":
+        case ">":
+            return "sign";
         default:
             return "textgnrc";
     }

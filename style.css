@@ -43,10 +43,6 @@ header {
     font-size: 16px;
     display: flex;
 }
-#text {
-    display: inline-block;
-    height: 30px;
-}
 #input {
     display: inline-block;
     vertical-align: top;
@@ -64,6 +60,17 @@ header {
     line-height: 30px;
     flex: 1;
 }
+.rows {
+    display: inline-block;
+}
+#rows {
+    flex: 1;
+}
+.rowsouter {
+    display: flex;;
+    width: 100%;
+    height: 30px;
+}
 .textspan {
     margin-top: auto;
     margin-bottom: auto;
@@ -73,5 +80,11 @@ header {
     color: #f0ffff;
 }
 .keyword {
+    color: #c84db4;
+}
+.number {
+ color: #d38200;
+}
+.sign {
     color: #c84db4;
 }
