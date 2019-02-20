@@ -1,15 +1,15 @@
 const editor = document.getElementById("editor");
 const input = document.getElementById("input");
-const text = document.getElementById("text")
+const text = document.getElementById("text");
 var ric = 1;
 
 function main()
 {
-    input.addEventListener("keydown", checkForEnter)
-    input.addEventListener("keyup", checkForComplete)
+    input.addEventListener("keydown", checkForDown)
+    input.addEventListener("keyup", checkForUp)
 }
 
-function checkForEnter(event)
+function checkForDown(event)
 {
     if(event.keyCode==32)
     {
@@ -18,8 +18,24 @@ function checkForEnter(event)
 
         input.value="";
     }
+    if(event.keyCode==8)
+    {
+        if(input.value=="")
+        {
+            event.preventDefault();
+            let loadspan = document.getElementById(ric - 1);
+            let splitarr = loadspan.innerHTML.split("&nbsp;")
+            for(var i = 0; i < splitarr.length; i++)
+            {
+                input.value+=splitarr[i];
+            }
+            loadspan.parentNode.removeChild(loadspan);
+            ric--;
+        }
+    }
 }
-function checkForComplete(event)
+
+function checkForUp(event)
 {
     if(event.which==66)
     {
@@ -29,19 +45,19 @@ function checkForComplete(event)
 
 function makeSpan(HTML, type, space = true)
 {
-    var blaa = document.createElement("span");
+    let span = document.createElement("span");
     if(space)
     {
-        blaa.innerHTML = HTML + "&nbsp";
+        span.innerHTML = HTML + "&nbsp";
     }
     else
     {
-        blaa.innerHTML = HTML;
+        span.innerHTML = HTML;
     }
-    blaa.classList.add("textspan")
-    blaa.classList.add(type)
-    blaa.id = ric;
-    text.appendChild(blaa);
+    span.classList.add("textspan")
+    span.classList.add(type)
+    span.id = ric;
+    text.appendChild(span);
     ric+=1;
 }
 
