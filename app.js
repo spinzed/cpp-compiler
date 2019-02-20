@@ -5,6 +5,7 @@ var rowsouter = document.getElementById("rowsouter1");
 var rowdiv = document.getElementById("row1")
 var row = 1;
 var column = 1;
+var columnarray = [null]
 
 function main()
 {
@@ -24,6 +25,10 @@ function checkForDown(event)
     if(event.keyCode==13)
     {
         event.preventDefault();
+        refractor();
+        input.value="";
+
+        columnarray[row] = column;
 
         let newouterrow = document.createElement("div");
         newouterrow.classList.add("rowsouter");
@@ -43,19 +48,25 @@ function checkForDown(event)
         rowsouter = newouterrow;
         rowdiv = newrow;
         row++;
+
+        input.focus();
     }
     if(event.keyCode==8)
     {
         if(input.value=="")
         {
             if(column == 1)
-            {
-                row--;
-                rowsouter.parentNode.removeChild(rowsouter);
-                rowdiv = document.getElementById("row" + row);
-                rowsouter = document.getElementById("rowsouter" + row);
-                rowsouter.appendChild(input);
+            {   if(row != 1)
+                {
+                    row--;
+                    column = columnarray[row]
+                    rowsouter.parentNode.removeChild(rowsouter);
+                    rowdiv = document.getElementById("row" + row);
+                    rowsouter = document.getElementById("rowsouter" + row);
+                    rowsouter.appendChild(input);
 
+                    input.focus();
+                }
             }
             else
             {
@@ -150,6 +161,7 @@ function getType(variable)
         case "8":
         case "9":
             return "number";
+        case "|":
         case ":":
         case "=":
         case "<":
