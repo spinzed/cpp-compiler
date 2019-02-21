@@ -25,7 +25,11 @@ function checkForDown(event)
     if(event.keyCode==13) //enter
     {
         event.preventDefault();
-        refractor(false);
+        if(input.value != "")
+        {
+            console.log("osjdfjiosd")
+            refractor(false);
+        }
         input.value="";
 
         columnarray[row] = column;
@@ -64,24 +68,17 @@ function checkForDown(event)
                     rowdiv = document.getElementById("row" + row);
                     rowsouter = document.getElementById("rowsouter" + row);
                     rowsouter.appendChild(input);
-
+                    if(column != 1)
+                    {
+                        deleteLastSpan(event);
+                    }
                     input.focus();
                 }
             }
             else
             {
-                event.preventDefault();
-
-                let loadspan = document.getElementById(row + "_" + (column - 1));
-                let splitarr = loadspan.innerHTML.split("&nbsp;")
-
-                for(var i = 0; i < splitarr.length; i++)
-                {
-                    input.value += splitarr[i];
-                }
-
-                loadspan.parentNode.removeChild(loadspan);
-                column--;
+                deleteLastSpan(event);
+                input.value = input.value.replace(" ", "");
             }
         }
     }
@@ -100,24 +97,6 @@ function checkForDown(event)
 function checkForUp(event)
 {
     
-}
-
-function makeSpan(HTML, type, space = true)
-{
-    let span = document.createElement("span");
-    if(space)
-    {
-        span.innerHTML = HTML + "&nbsp";
-    }
-    else
-    {
-        span.innerHTML = HTML;
-    }
-    span.classList.add("textspan")
-    span.classList.add(type)
-    span.id = row + "_" + column;
-    rowdiv.appendChild(span);
-    column+=1;
 }
 
 function refractor(space)
@@ -144,6 +123,51 @@ function refractor(space)
     }
 }
 
+function deleteLastSpan(event)
+{
+    event.preventDefault();
+
+    let loadspan = document.getElementById(row + "_" + (column - 1));
+
+    input.value = loadspan.innerHTML;
+    input.value = input.value.replace("&nbsp;", " ");
+
+    loadspan.parentNode.removeChild(loadspan);
+    column--;
+}
+
+function changeActiveSpan()
+{
+    
+}
+
+function makeSpan(HTML, type, space = true)
+{
+    let span = document.createElement("span");
+    if(space)
+    {
+        span.innerHTML = HTML + "&nbsp";
+    }
+    else
+    {
+        span.innerHTML = HTML;
+    }
+    span.classList.add("textspan")
+    span.classList.add(type)
+    span.id = row + "_" + column;
+    span.setAttribute("onclick", "changeActiveSpan.call(this)")
+    rowdiv.appendChild(span);
+    column++;
+}
+
+function parseID(id)
+{
+    let idarr = [];
+    idarr = id.split("_");
+    row = idarr[0];
+    column = idarr[1];
+}
+
 function getType(variable)
 {
     switch (variable)
@@ -155,6 +179,8 @@ function getType(variable)
         case "if":
         case "for":
         case "while":
+        case "using":
+        case "namespace":
         case "#include":
             return "keyword";
         case "0":
