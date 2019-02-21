@@ -5,97 +5,95 @@ var rowsouter = document.getElementById("rowsouter1");
 var rowdiv = document.getElementById("row1")
 var row = 1;
 var column = 1;
+var currentRow = 1;
+var currentColumn = 1;
 var columnarray = [null]
 
 function main()
 {
     input.addEventListener("keydown", checkForDown);
-    input.addEventListener("keyup", checkForUp);
 }
 
 function checkForDown(event)
 {
-    if(event.keyCode==32) //space
+    switch(event.key)
     {
-        event.preventDefault();
-        refractor(true);
+        case "Space": //space
+            event.preventDefault();
+            refractor(true);
+            input.value="";
+            break;
+        case "Enter":  //enter
+            event.preventDefault();
+            if(input.value != "")
+            {
+                refractor(false);
+            }
 
-        input.value="";
-    }
-    if(event.keyCode==13) //enter
-    {
-        event.preventDefault();
-        if(input.value != "")
-        {
-            refractor(false);
-        }
-        input.value="";
-
-        columnarray[row] = column;
-
-        let newouterrow = document.createElement("div");
-        newouterrow.classList.add("rowsouter");
-        newouterrow.id = "rowsouter" + (row + 1);
-
-        let newrow = document.createElement("div");
-        newrow.classList.add("rows");
-        newrow.id = "row" + (row + 1);
-
-        rows.appendChild(newouterrow);
-        newouterrow.appendChild(newrow);
-
-        input.parentNode.removeChild(input);
-        newouterrow.appendChild(input);
-
-        column = 1;
-        rowsouter = newouterrow;
-        rowdiv = newrow;
-        row++;
-
-        input.focus();
-    }
-    if(event.keyCode==8) //backspace
-    {
-        if(input.value=="")
-        {
-            if(column == 1)
-            {   if(row != 1)
-                {
-                    row--;
-                    column = columnarray[row]
-                    rowsouter.parentNode.removeChild(rowsouter);
-                    rowdiv = document.getElementById("row" + row);
-                    rowsouter = document.getElementById("rowsouter" + row);
-                    rowsouter.appendChild(input);
-                    if(column != 1)
+            makeLine();
+            input.focus();
+            break;
+        case "Backspace": //backspace
+            if(input.value=="")
+            {
+                if(column == 1)
+                {   if(row != 1)
                     {
-                        deleteLastSpan(event);
+                        row--;
+                        column = columnarray[row]
+                        rowsouter.parentNode.removeChild(rowsouter);
+                        rowdiv = document.getElementById("row" + row);
+                        rowsouter = document.getElementById("rowsouter" + row);
+                        rowsouter.appendChild(input);
+                        if(column != 1)
+                        {
+                            deleteLastSpan(event);
+                        }
+                        input.focus();
                     }
-                    input.focus();
+                }
+                else
+                {
+                    deleteLastSpan(event);
+                    input.value = input.value.replace(" ", "");
                 }
             }
-            else
-            {
-                deleteLastSpan(event);
-                input.value = input.value.replace(" ", "");
-            }
-        }
-    }
-    if(event.keyCode==9) //tab
-    {
-        event.preventDefault();
-        input.value+="    ";
-    }
-    if(event.key=="{") //{
-    {
-        event.preventDefault();
-        input.value+="{}";
+            break;
+        case "Tab": //tab
+            event.preventDefault();
+            input.value+="    ";
+            break;
+        case "{": //{
+            event.preventDefault();
+            input.value+="{}";
+            break;
     }
 }
 
-function checkForUp(event)
+function makeLine()
 {
-    
+    input.value="";
+
+    columnarray[row] = column;
+
+    let newouterrow = document.createElement("div");
+    newouterrow.classList.add("rowsouter");
+    newouterrow.id = "rowsouter" + (row + 1);
+
+    let newrow = document.createElement("div");
+    newrow.classList.add("rows");
+    newrow.id = "row" + (row + 1);
+
+    rows.appendChild(newouterrow);
+    newouterrow.appendChild(newrow);
+
+    input.parentNode.removeChild(input);
+    newouterrow.appendChild(input);
+
+    column = 1;
+    rowsouter = newouterrow;
+    rowdiv = newrow;
+    row++;
 }
 
 function refractor(space)
@@ -120,19 +118,6 @@ function refractor(space)
             }
         }
     }
-}
-
-function deleteLastSpan(event)
-{
-    event.preventDefault();
-
-    let loadspan = document.getElementById(row + "_" + (column - 1));
-
-    input.value = loadspan.innerHTML;
-    input.value = parseFromHTML(input.value);
-
-    loadspan.parentNode.removeChild(loadspan);
-    column--;
 }
 
 function changeActiveSpan()
@@ -160,67 +145,17 @@ function makeSpan(content, type, space = true)
     column++;
 }
 
-function parseID(id)
+function deleteLastSpan(event)
 {
-    let idarr = [];
-    idarr = id.split("_");
-    row = idarr[0];
-    column = idarr[1];
-}
+    event.preventDefault();
 
-function getType(variable)
-{
-    switch (variable)
-    {
-        case "var":
-        case "int":
-        case "bool":
-        case "str":
-        case "if":
-        case "for":
-        case "while":
-        case "using":
-        case "namespace":
-        case "#include":
-            return "keyword";
-        case "0":
-        case "1":
-        case "2":
-        case "3":
-        case "4":
-        case "5":
-        case "6":
-        case "7":
-        case "8":
-        case "9":
-            return "number";
-        case "|":
-        case ":":
-        case "=":
-        case "<":
-        case ">":
-            return "sign";
-        default:
-            return "textgnrc";
-    }
-}
+    let loadspan = document.getElementById(row + "_" + (column - 1));
 
-function parseToHTML(value)
-{
-    var result = value;
-    result = result.replace(" ", "&nbsp;");
-    result = result.replace("<", "&lt;");
-    result = result.replace(">", "&gt;");
-    return result;
-}
+    input.value = loadspan.innerHTML;
+    input.value = parseFromHTML(input.value);
 
-function parseFromHTML(value)
-{
-    var result = value;
-    result = result.replace("&nbsp;", " ");
-    result = result.replace("&lt;", "<");
-    result = result.replace("&gt;", ">");
-    return result;
+    loadspan.parentNode.removeChild(loadspan);
+    column--;
 }
 
 main();
