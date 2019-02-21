@@ -15,17 +15,17 @@ function main()
 
 function checkForDown(event)
 {
-    if(event.keyCode==32)
+    if(event.keyCode==32) //space
     {
         event.preventDefault();
-        refractor();
+        refractor(true);
 
         input.value="";
     }
-    if(event.keyCode==13)
+    if(event.keyCode==13) //enter
     {
         event.preventDefault();
-        refractor();
+        refractor(false);
         input.value="";
 
         columnarray[row] = column;
@@ -51,7 +51,7 @@ function checkForDown(event)
 
         input.focus();
     }
-    if(event.keyCode==8)
+    if(event.keyCode==8) //backspace
     {
         if(input.value=="")
         {
@@ -85,19 +85,21 @@ function checkForDown(event)
             }
         }
     }
-    if(event.keyCode==9)
+    if(event.keyCode==9) //tab
     {
         event.preventDefault();
         input.value+="    ";
+    }
+    if(event.key=="{") //{
+    {
+        event.preventDefault();
+        input.value+="{}";
     }
 }
 
 function checkForUp(event)
 {
-    if(event.which==66)
-    {
-        input.value+="}";
-    }
+    
 }
 
 function makeSpan(HTML, type, space = true)
@@ -118,12 +120,12 @@ function makeSpan(HTML, type, space = true)
     column+=1;
 }
 
-function refractor()
+function refractor(space)
 {
     var parts = input.value.split("(")
     if(parts.length == 1)
     {
-        makeSpan(parts[0], getType(parts[0]))
+        makeSpan(parts[0], getType(parts[0]), space)
     }
     else
     {
