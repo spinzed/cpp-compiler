@@ -27,7 +27,6 @@ function checkForDown(event)
         event.preventDefault();
         if(input.value != "")
         {
-            console.log("osjdfjiosd")
             refractor(false);
         }
         input.value="";
@@ -130,7 +129,7 @@ function deleteLastSpan(event)
     let loadspan = document.getElementById(row + "_" + (column - 1));
 
     input.value = loadspan.innerHTML;
-    input.value = input.value.replace("&nbsp;", " ");
+    input.value = parseFromHTML(input.value);
 
     loadspan.parentNode.removeChild(loadspan);
     column--;
@@ -141,16 +140,17 @@ function changeActiveSpan()
     
 }
 
-function makeSpan(HTML, type, space = true)
+function makeSpan(content, type, space = true)
 {
+    parsedContent = parseToHTML(content);
     let span = document.createElement("span");
     if(space)
     {
-        span.innerHTML = HTML + "&nbsp";
+        span.innerHTML = parsedContent + "&nbsp";
     }
     else
     {
-        span.innerHTML = HTML;
+        span.innerHTML = parsedContent;
     }
     span.classList.add("textspan")
     span.classList.add(type)
@@ -203,6 +203,24 @@ function getType(variable)
         default:
             return "textgnrc";
     }
+}
+
+function parseToHTML(value)
+{
+    var result = value;
+    result = result.replace(" ", "&nbsp;");
+    result = result.replace("<", "&lt;");
+    result = result.replace(">", "&gt;");
+    return result;
+}
+
+function parseFromHTML(value)
+{
+    var result = value;
+    result = result.replace("&nbsp;", " ");
+    result = result.replace("&lt;", "<");
+    result = result.replace("&gt;", ">");
+    return result;
 }
 
 main();
