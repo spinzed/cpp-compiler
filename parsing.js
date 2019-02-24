@@ -71,3 +71,38 @@ function replaceAll(string, oldValue, newValue)
     }
     return result;
 }
+
+function parseToArray(string)
+{
+    pop = false;
+    let arr = [string];
+    let temp = [];
+    let result = [];
+    let signs = ["(", ")", ";", "="];
+    signs.forEach(sign => {
+        arr.forEach(i => {
+            let len = arr.length - 1;
+            console.log("attempt " + sign)
+            if(arr[len][arr[len].length-1]==sign)
+            {
+                pop = true;
+            }
+            temp = i.split(sign);
+            temp.forEach(j => {
+                result.push(j, sign);
+            });
+            console.log(result)
+            result.pop();
+            temp = [];
+        });
+        if(pop)
+        {
+            result.pop();
+            pop = false;
+        }
+        arr = result;
+        result = [];
+    });
+    result = arr;
+    return result;
+}

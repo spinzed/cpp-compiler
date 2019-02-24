@@ -2,3 +2,4 @@
 .vscode/
 test/
 *.code-workspace
+test.js

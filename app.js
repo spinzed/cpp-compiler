@@ -105,26 +105,19 @@ function makeLine()
 
 function refractorInputField(space) // Parses input field and puts its content int spans
 {
-    var parts = input.value.split("(")
-    if(parts.length == 1)
+    let elements = parseToArray(input.value);
+    for(var i = 0; i < elements.length; i++)
     {
-        makeSpan(parts[0], getType(parts[0]), space)
-    }
-    else
-    {
-        makeSpan(parts[0], getType(parts[0]), false)
-        for(let i = 1; i < parts.length; i++)
+        if(i == elements.length-1)
         {
-            if(i == parts.length - 1)
-            {
-                makeSpan("(" + parts[i], getType(parts[i]))
-            }
-            else
-            {
-                makeSpan("(" + parts[i], getType(parts[i]), false)
-            }
+            makeSpan(elements[i], getType(elements[i]));
+        }
+        else
+        {
+            makeSpan(elements[i], getType(elements[i]), false);
         }
     }
+
     input.value = "";
 }
 
@@ -137,6 +130,7 @@ function makeSpan(content, type, space = true)
 {
     let parsedContent = parseToHTML(content);
     let span = document.createElement("span");
+    span.setAttribute("contenteditable", "true")
     if(space)
     {
         span.innerHTML = parsedContent + "&nbsp";
