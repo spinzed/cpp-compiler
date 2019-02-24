@@ -25,6 +25,18 @@ header {
     width: 300px;
     background: #333338;
 }
+.focusdiv {
+    width: 220px;
+    height: 90px;
+    background-color: #136613;
+    color: white;
+    text-align: center;
+    display: flex;
+}
+#focusbutton {
+    margin: auto;
+    flex: 1;
+}
 .editorouter {
     flex: 1;
     display: flex;
@@ -58,7 +70,7 @@ header {
     font: inherit;
     font-size: inherit;
     line-height: 30px;
-    flex: 1;
+    width: 100px;
 }
 .rows {
     display: inline-block;
@@ -83,7 +95,7 @@ header {
     color: #c84db4;
 }
 .number {
- color: #d38200;
+    color: #d38200;
 }
 .sign {
     color: #c84db4;

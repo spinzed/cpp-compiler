@@ -3,10 +3,10 @@ const input = document.getElementById("input");
 const rows = document.getElementById("rows");
 var rowsouter = document.getElementById("rowsouter1");
 var rowdiv = document.getElementById("row1")
-var row = 1;
-var column = 1;
-var currentRow = 1;
-var currentColumn = 1;
+var row = 1; // # of rows
+var column = 1; // # of words in the current row
+var currentRow = 1; // # of the active row
+var currentColumn = 1; // # of the active word in a row
 var columnarray = [null]
 
 function main()
@@ -18,16 +18,15 @@ function checkForDown(event)
 {
     switch(event.key)
     {
-        case "Space": //space
+        case " ": //space
             event.preventDefault();
-            refractor(true);
-            input.value="";
+            refractorInputField(true);
             break;
         case "Enter":  //enter
             event.preventDefault();
             if(input.value != "")
             {
-                refractor(false);
+                refractorInputField(false);
             }
 
             makeLine();
@@ -36,16 +35,17 @@ function checkForDown(event)
         case "Backspace": //backspace
             if(input.value=="")
             {
-                if(column == 1)
+                if(currentColumn == 1)
                 {   if(row != 1)
                     {
                         row--;
-                        column = columnarray[row]
+                        currentRow--;
+                        currentColumn = columnarray[row]
                         rowsouter.parentNode.removeChild(rowsouter);
-                        rowdiv = document.getElementById("row" + row);
-                        rowsouter = document.getElementById("rowsouter" + row);
+                        rowdiv = document.getElementById("row" + currentRow);
+                        rowsouter = document.getElementById("rowsouter" + currentRow);
                         rowsouter.appendChild(input);
-                        if(column != 1)
+                        if(currentColumn != 1)
                         {
                             deleteLastSpan(event);
                         }
@@ -61,12 +61,17 @@ function checkForDown(event)
             break;
         case "Tab": //tab
             event.preventDefault();
-            input.value+="    ";
+            refractorInputField(false);
+            input.value += "    ";
+            refractorInputField(false);
             break;
         case "{": //{
             event.preventDefault();
-            input.value+="{}";
+            input.value += "{}";
             break;
+        default:
+            console.log(input.value);
+            updateTempSpan();
     }
 }
 
@@ -91,12 +96,14 @@ function makeLine()
     newouterrow.appendChild(input);
 
     column = 1;
+    currentColumn = 1;
     rowsouter = newouterrow;
     rowdiv = newrow;
     row++;
+    currentRow++;
 }
 
-function refractor(space)
+function refractorInputField(space) // Parses input field and puts its content int spans
 {
     var parts = input.value.split("(")
     if(parts.length == 1)
@@ -118,16 +125,17 @@ function refractor(space)
             }
         }
     }
+    input.value = "";
 }
 
-function changeActiveSpan()
+function updateTempSpan()
 {
     
 }
 
 function makeSpan(content, type, space = true)
 {
-    parsedContent = parseToHTML(content);
+    let parsedContent = parseToHTML(content);
     let span = document.createElement("span");
     if(space)
     {
@@ -139,23 +147,39 @@ function makeSpan(content, type, space = true)
     }
     span.classList.add("textspan")
     span.classList.add(type)
-    span.id = row + "_" + column;
+    span.id = currentRow + "_" + currentColumn;
     span.setAttribute("onclick", "changeActiveSpan.call(this)")
+
+    for(var i = column; i > currentColumn; i--)
+    {
+        let elem1 = document.getElementById(currentRow + "_" + i);
+        elem1.id = currentRow + "_" + (i + 1);
+    }
+        
+    console.log("dfsdf")
     rowdiv.appendChild(span);
+
     column++;
+    currentColumn++;
 }
 
 function deleteLastSpan(event)
 {
     event.preventDefault();
 
-    let loadspan = document.getElementById(row + "_" + (column - 1));
+    let loadspan = document.getElementById(currentRow + "_" + (currentColumn - 1));
 
     input.value = loadspan.innerHTML;
     input.value = parseFromHTML(input.value);
 
     loadspan.parentNode.removeChild(loadspan);
     column--;
+    currentColumn--;
+}
+
+function focusInput()
+{
+    input.focus();
 }
 
 main();

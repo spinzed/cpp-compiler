@@ -2,8 +2,8 @@ function parseID(id)
 {
     let idarr = [];
     idarr = id.split("_");
-    row = idarr[0];
-    column = idarr[1];
+    currentRow = idarr[0];
+    currentColumn = idarr[1];
 }
 
 function getType(variable)
@@ -45,8 +45,8 @@ function getType(variable)
 
 function parseToHTML(value)
 {
-    var result = value;
-    result = result.replace(" ", "&nbsp;");
+    let result = value;
+    result = replaceAll(result, " ", "&nbsp;");
     result = result.replace("<", "&lt;");
     result = result.replace(">", "&gt;");
     return result;
@@ -54,9 +54,20 @@ function parseToHTML(value)
 
 function parseFromHTML(value)
 {
-    var result = value;
-    result = result.replace("&nbsp;", " ");
+    let result = value;
+    result = replaceAll(result, "&nbsp;", " ");
     result = result.replace("&lt;", "<");
     result = result.replace("&gt;", ">");
+    return result;
+}
+
+function replaceAll(string, oldValue, newValue)
+{
+    let result = string;
+    while(result.includes(oldValue))
+    {
+        result = result.replace(oldValue, newValue)
+        console.log(result)
+    }
     return result;
 }
