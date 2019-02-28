@@ -78,12 +78,11 @@ function parseToArray(string)
     let arr = [string];
     let temp = [];
     let result = [];
-    let signs = ["(", ")", ";", "="];
+    let signs = ["(", ")", ";", "=", "<", ">", "|", ":"];
     signs.forEach(sign => {
         arr.forEach(i => {
             let len = arr.length - 1;
-            console.log("attempt " + sign)
-            if(arr[len][arr[len].length-1]==sign)
+            if(arr[len][arr[len].length-1] == sign)
             {
                 pop = true;
             }
@@ -91,7 +90,6 @@ function parseToArray(string)
             temp.forEach(j => {
                 result.push(j, sign);
             });
-            console.log(result)
             result.pop();
             temp = [];
         });

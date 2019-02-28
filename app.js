@@ -7,7 +7,7 @@ var row = 1; // # of rows
 var column = 1; // # of words in the current row
 var currentRow = 1; // # of the active row
 var currentColumn = 1; // # of the active word in a row
-var columnarray = [null]
+var columnArray = [null]
 
 function main()
 {
@@ -28,7 +28,6 @@ function checkForDown(event)
             {
                 refractorInputField(false);
             }
-
             makeLine();
             input.focus();
             break;
@@ -38,13 +37,7 @@ function checkForDown(event)
                 if(currentColumn == 1)
                 {   if(row != 1)
                     {
-                        row--;
-                        currentRow--;
-                        currentColumn = columnarray[row]
-                        rowsouter.parentNode.removeChild(rowsouter);
-                        rowdiv = document.getElementById("row" + currentRow);
-                        rowsouter = document.getElementById("rowsouter" + currentRow);
-                        rowsouter.appendChild(input);
+                        deleteLine();
                         if(currentColumn != 1)
                         {
                             deleteLastSpan(event);
@@ -55,7 +48,15 @@ function checkForDown(event)
                 else
                 {
                     deleteLastSpan(event);
-                    input.value = input.value.replace(" ", "");
+                    // input.value = input.value.replace(" ", "");
+                    let value = input.value;
+                    let valueResult = "";
+                    for(var i = 0; i < value.length; i++) {
+                        if(i != value.length - 1) {
+                            valueResult+=value[i]
+                        }
+                    }
+                    input.value = valueResult;
                 }
             }
             break;
@@ -70,37 +71,8 @@ function checkForDown(event)
             input.value += "{}";
             break;
         default:
-            console.log(input.value);
             updateTempSpan();
     }
-}
-
-function makeLine()
-{
-    input.value="";
-
-    columnarray[row] = column;
-
-    let newouterrow = document.createElement("div");
-    newouterrow.classList.add("rowsouter");
-    newouterrow.id = "rowsouter" + (row + 1);
-
-    let newrow = document.createElement("div");
-    newrow.classList.add("rows");
-    newrow.id = "row" + (row + 1);
-
-    rows.appendChild(newouterrow);
-    newouterrow.appendChild(newrow);
-
-    input.parentNode.removeChild(input);
-    newouterrow.appendChild(input);
-
-    column = 1;
-    currentColumn = 1;
-    rowsouter = newouterrow;
-    rowdiv = newrow;
-    row++;
-    currentRow++;
 }
 
 function refractorInputField(space) // Parses input field and puts its content int spans
@@ -110,7 +82,7 @@ function refractorInputField(space) // Parses input field and puts its content i
     {
         if(i == elements.length-1)
         {
-            makeSpan(elements[i], getType(elements[i]));
+            makeSpan(elements[i], getType(elements[i]), space);
         }
         else
         {
@@ -121,9 +93,43 @@ function refractorInputField(space) // Parses input field and puts its content i
     input.value = "";
 }
 
-function updateTempSpan()
+function makeLine()
+{
+    columnArray[row] = column;
+
+    let newOuterRow = document.createElement("div");
+    newOuterRow.classList.add("rowsouter");
+    newOuterRow.id = "rowsouter" + (row + 1);
+
+    let newRow = document.createElement("div");
+    newRow.classList.add("rows");
+    newRow.id = "row" + (row + 1);
+
+    rows.appendChild(newOuterRow);
+    newOuterRow.appendChild(newRow);
+
+    input.parentNode.removeChild(input);
+    newOuterRow.appendChild(input);
+
+    column = 1;
+    currentColumn = 1;
+    rowsouter = newOuterRow;
+    rowdiv = newRow;
+    row++;
+    currentRow++;
+}
+
+function deleteLine()
 {
     
+    row--;
+    currentRow--;
+    column = columnArray[row];
+    currentColumn = columnArray[row];
+    rowsouter.parentNode.removeChild(rowsouter);
+    rowdiv = document.getElementById("row" + currentRow);
+    rowsouter = document.getElementById("rowsouter" + currentRow);
+    rowsouter.appendChild(input);
 }
 
 function makeSpan(content, type, space = true)
@@ -139,8 +145,8 @@ function makeSpan(content, type, space = true)
     {
         span.innerHTML = parsedContent;
     }
-    span.classList.add("textspan")
-    span.classList.add(type)
+    span.classList.add("textspan");
+    span.classList.add(type);
     span.id = currentRow + "_" + currentColumn;
     span.setAttribute("onclick", "changeActiveSpan.call(this)")
 
@@ -150,7 +156,6 @@ function makeSpan(content, type, space = true)
         elem1.id = currentRow + "_" + (i + 1);
     }
         
-    console.log("dfsdf")
     rowdiv.appendChild(span);
 
     column++;
@@ -171,9 +176,13 @@ function deleteLastSpan(event)
     currentColumn--;
 }
 
-function focusInput()
-{
+function focusInput() {
     input.focus();
+}
+
+function updateTempSpan()
+{
+
 }
 
 main();

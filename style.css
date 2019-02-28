@@ -33,10 +33,7 @@ header {
     text-align: center;
     display: flex;
 }
-#focusbutton {
-    margin: auto;
-    flex: 1;
-}
+
 .editorouter {
     flex: 1;
     display: flex;
