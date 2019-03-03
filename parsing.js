@@ -81,12 +81,11 @@ function replaceAll(string, oldValue, newValue)
 function parseToArray(string)
 {
     let arr = [string];
-    let temp = [];
     let result = [];
     let signs = ["(", ")", ";", "=", "<", ">", "#", "@", "|", ":", "&", "\"", "\'"];
     signs.forEach(sign => { // every sign
-        for(var i = 0; i < arr.length; i++) { // every word
-            let word = arr[i];
+        for(var j = 0; j < arr.length; j++) { // every word
+            let word = arr[j];
             switchBreak: {
                 switch(sign) {
                     case "#":
@@ -94,53 +93,56 @@ function parseToArray(string)
                             result.push(word);
                             break switchBreak;
                         }
+                        result = defaultParse(word, sign, result);
+                        break switchBreak;
                     case "@":
                         if(word[0] == sign) {
                             result.push(word);
                             break switchBreak;
                         }
-                    default:
-                        temp = word.split(sign);
-                        temp.forEach(j => {
-                            result.push(j, sign);
-                        });
-                        result.pop();
-                        temp = [];
+                        result = defaultParse(word, sign, result);
+                        break switchBreak;
                     case "\"":
                     case "\'":
-                        for(var i = 0; i < arr.length; i++) { // every word
-                            word = arr[i];
-                            temp = word.split(sign);
-                            temp.forEach(j => {
-                                result.push(j, sign);
-                            });
-                            result.pop();
-                            temp = [];
-                            for(var i = 0; i < result.length; i++) {
-                                if(result[i] == sign) {
-                                    for(var j = i+1; j < result.length; j++) {
-                                        if(result[j] == sign) {
-                                            for(var k = i; k < j; k++) {
-                                                result[i]+=result[i+1];
-                                                result.splice(i+1, 1);
-                                            }
+                        result = defaultParse(word, sign, result);
+                        for(var k = 0; k < result.length; k++) { // first "
+                            if(result[k] == sign) {
+                                for(var l = k + 1; l < result.length; l++) { // second "
+                                    if(result[l] == sign) {
+                                        for(var m = k; m < l; m++) {
+                                            result[k]+=result[k + 1];
+                                            result.splice(k + 1, 1);
                                         }
                                     }
                                 }
                             }
                         }
+                        break switchBreak;
+                    default:
+                        result = defaultParse(word, sign, result);
+                        break switchBreak;
                 }
             }
         }
         // array
-        for(var i = 0; i < result.length; i++) {
-            if(result[i]=="") {
-                result.splice(i, 1)
+        for(var j = 0; j < result.length; j++) {
+            if(result[j]=="") {
+                result.splice(j, 1)
             }
         }
         arr = result;
+        console.log(result)
         result = [];
     });
     result = arr;
     return result;
+
+    function defaultParse(word, sign, resultArray) {
+        let tempArr = word.split(sign);
+        tempArr.forEach(j => {
+            resultArray.push(j, sign);
+        });
+        resultArray.pop();
+        return resultArray;
+    }
 }
