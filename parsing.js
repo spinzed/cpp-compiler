@@ -82,7 +82,7 @@ function parseToArray(string)
 {
     let arr = [string];
     let result = [];
-    let signs = ["(", ")", ";", "=", "<", ">", "#", "@", "|", ":", "&", "\"", "\'"];
+    let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">", "\"", "\'"];
     signs.forEach(sign => { // every sign
         for(var j = 0; j < arr.length; j++) { // every word
             let word = arr[j];
@@ -101,6 +101,24 @@ function parseToArray(string)
                             break switchBreak;
                         }
                         result = defaultParse(word, sign, result);
+                        break switchBreak;
+                    case "<":
+                        result = defaultParse(word, sign, result);
+                        break switchBreak;
+                    case ">":
+                        result = defaultParse(word, sign, result);
+                        for(var k = 0; k < result.length; k++) { // first "
+                            if(result[k] == "<") {
+                                for(var l = k + 1; l < result.length; l++) { // second "
+                                    if(result[l] == ">") {
+                                        for(var m = k; m < l; m++) {
+                                            result[k]+=result[k + 1];
+                                            result.splice(k + 1, 1);
+                                        }
+                                    }
+                                }
+                            }
+                        }
                         break switchBreak;
                     case "\"":
                     case "\'":
