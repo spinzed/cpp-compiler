@@ -1,5 +1,5 @@
 # Spinzed's files
 .vscode/
 test/
+node_test/
 *.code-workspace
-test.js

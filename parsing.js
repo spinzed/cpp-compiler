@@ -13,7 +13,7 @@ function getType(variable)
         case "var":
         case "int":
         case "bool":
-        case "str":
+        case "string":
         case "if":
         case "for":
         case "while":
@@ -39,6 +39,12 @@ function getType(variable)
         case ">":
             return "sign";
         default:
+            if(variable[0]=="\"" && variable[variable.length]=="\"") {
+                return "string";
+            }
+            if(variable[0]=="\'" && variable[variable.length]=="\'") {
+                return "string";
+            }
             return "textgnrc";
     }
 }
@@ -74,29 +80,63 @@ function replaceAll(string, oldValue, newValue)
 
 function parseToArray(string)
 {
-    pop = false;
     let arr = [string];
     let temp = [];
     let result = [];
-    let signs = ["(", ")", ";", "=", "<", ">", "|", ":"];
-    signs.forEach(sign => {
-        arr.forEach(i => {
-            let len = arr.length - 1;
-            if(arr[len][arr[len].length-1] == sign)
-            {
-                pop = true;
+    let signs = ["(", ")", ";", "=", "<", ">", "#", "@", "|", ":", "&", "\"", "\'"];
+    signs.forEach(sign => { // every sign
+        for(var i = 0; i < arr.length; i++) { // every word
+            let word = arr[i];
+            switchBreak: {
+                switch(sign) {
+                    case "#":
+                        if(word[0] == sign) {
+                            result.push(word);
+                            break switchBreak;
+                        }
+                    case "@":
+                        if(word[0] == sign) {
+                            result.push(word);
+                            break switchBreak;
+                        }
+                    default:
+                        temp = word.split(sign);
+                        temp.forEach(j => {
+                            result.push(j, sign);
+                        });
+                        result.pop();
+                        temp = [];
+                    case "\"":
+                    case "\'":
+                        for(var i = 0; i < arr.length; i++) { // every word
+                            word = arr[i];
+                            temp = word.split(sign);
+                            temp.forEach(j => {
+                                result.push(j, sign);
+                            });
+                            result.pop();
+                            temp = [];
+                            for(var i = 0; i < result.length; i++) {
+                                if(result[i] == sign) {
+                                    for(var j = i+1; j < result.length; j++) {
+                                        if(result[j] == sign) {
+                                            for(var k = i; k < j; k++) {
+                                                result[i]+=result[i+1];
+                                                result.splice(i+1, 1);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                }
             }
-            temp = i.split(sign);
-            temp.forEach(j => {
-                result.push(j, sign);
-            });
-            result.pop();
-            temp = [];
-        });
-        if(pop)
-        {
-            result.pop();
-            pop = false;
+        }
+        // array
+        for(var i = 0; i < result.length; i++) {
+            if(result[i]=="") {
+                result.splice(i, 1)
+            }
         }
         arr = result;
         result = [];
