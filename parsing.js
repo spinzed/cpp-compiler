@@ -34,6 +34,7 @@ function getType(variable)
             return "number";
         case "|":
         case ":":
+        case ";":
         case "=":
         case "<":
         case ">":
@@ -73,7 +74,6 @@ function replaceAll(string, oldValue, newValue)
     while(result.includes(oldValue))
     {
         result = result.replace(oldValue, newValue)
-        console.log(result)
     }
     return result;
 }
@@ -149,7 +149,6 @@ function parseToArray(string)
             }
         }
         arr = result;
-        console.log(result)
         result = [];
     });
     result = arr;
