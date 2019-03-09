@@ -19,29 +19,36 @@ function checkForDown(event)
     switch(event.key) {
         case "Backspace":
             event.preventDefault();
-            let decoy = "";
-            for(var i = 0; i < currentRowValue.length; i++) {
-                if(i != currentRowValue.length-1) {
-                    decoy += currentRowValue[i];
-                }
+            if(currentRowValue == "" && currentRow != 1) {
+                deleteLine();
             }
-            currentRowValue = decoy;
-            refractorValue(currentRowValue, false);
+            else {
+                let decoy = "";
+                for(var i = 0; i < currentRowValue.length; i++) {
+                    if(i != currentRowValue.length-1) {
+                        decoy += currentRowValue[i];
+                    }
+                }
+                currentRowValue = decoy;
+                refractorValue(currentRowValue, false);
+                rowValuesPre[currentRow] = currentRowValue;
+            }
+
             break;
         case "Enter":
             event.preventDefault();
             refractorValue(currentRowValue, false);
             makeLine();
+            currentRowValue = "";
             break;
         default:
             if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]|".includes(event.key.toLowerCase())) {
+                event.preventDefault();
                 currentRowValue += event.key;
                 refractorValue(currentRowValue, true);
-                event.preventDefault();
+                rowValuesPre[currentRow] = currentRowValue;
             }
     }
-    
-    rowValuesPre[currentRow] = currentRowValue;
 }
 
 function refractorValue(value, space) // Parses input field and puts its content into spans

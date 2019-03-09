@@ -18,18 +18,18 @@ function makeLine() {
     rowdiv = newRow;
     row++;
     currentRow++;
+
+    rowValuesPre[currentRow] = "";
 }
 
 function deleteLine() {
+    rowsouter = document.getElementById("rowsouter" + currentRow);
+    rowsouter.parentNode.removeChild(rowsouter);
 
     row--;
     currentRow--;
     column = columnArray[row];
     currentColumn = columnArray[row];
-    rowsouter.parentNode.removeChild(rowsouter);
-    rowdiv = document.getElementById("row" + currentRow);
-    rowsouter = document.getElementById("rowsouter" + currentRow);
-    rowsouter.appendChild(input);
 }
 
 function makeSpan(content, type, space = true) {
