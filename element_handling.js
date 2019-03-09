@@ -12,9 +12,6 @@ function makeLine() {
     rows.appendChild(newOuterRow);
     newOuterRow.appendChild(newRow);
 
-    input.parentNode.removeChild(input);
-    newOuterRow.appendChild(input);
-
     column = 1;
     currentColumn = 1;
     rowsouter = newOuterRow;

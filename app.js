@@ -15,37 +15,44 @@ var rowValuesPost = { 1: "" };
 function checkForDown(event)
 {
     let currentRowValue = rowValuesPre[currentRow];
-    let activeRow = document.getElementById("row" + currentRow)
-    if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:(){}[]|".includes(event.key)) {
-        currentRowValue += event.key;
-    }
-    else {
-        switch(event.key) {
-            case "Backspace":
-                let decoy = "";
-                for(var i = 0; i < currentRowValue.length; i++) {
-                    if(i != currentRowValue.length-1) {
-                        decoy += currentRowValue[i];
-                    }
+
+    switch(event.key) {
+        case "Backspace":
+            event.preventDefault();
+            let decoy = "";
+            for(var i = 0; i < currentRowValue.length; i++) {
+                if(i != currentRowValue.length-1) {
+                    decoy += currentRowValue[i];
                 }
-                currentRowValue = decoy;
-
-        }
+            }
+            currentRowValue = decoy;
+            refractorValue(currentRowValue, false);
+            break;
+        case "Enter":
+            event.preventDefault();
+            refractorValue(currentRowValue, false);
+            makeLine();
+            break;
+        default:
+            if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]|".includes(event.key.toLowerCase())) {
+                currentRowValue += event.key;
+                refractorValue(currentRowValue, true);
+                event.preventDefault();
+            }
     }
+    
     rowValuesPre[currentRow] = currentRowValue;
-    event.preventDefault();
+}
 
-    while(activeRow.firstChild) {
+function refractorValue(value, space) // Parses input field and puts its content into spans
+{
+    let activeRow = document.getElementById("row" + currentRow);
+    while (activeRow.firstChild) {
         activeRow.removeChild(activeRow.firstChild);
     }
     column = 1;
     currentColumn = 1;
 
-    refractorValue(currentRowValue, true);
-}
-
-function refractorValue(value, space) // Parses input field and puts its content into spans
-{
     let elements = parseToArray(value);
     for (var i = 0; i < elements.length; i++) {
         if (i == elements.length - 1) {
