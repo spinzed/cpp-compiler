@@ -7,12 +7,13 @@ var column = 1; // # of words in the current row
 var currentRow = 1; // # of the active row
 var currentColumn = 1; // # of the active word in a row
 var columnArray = [null]
-var rowValuesPre = { 1: "" };
-var rowValuesPost = { 1: "" };
+var rowValues = { 1: "" };
+var currentRowValue = "";
+var remaining = "";
 
 function checkForDown(event)
 {
-    let currentRowValue = rowValuesPre[currentRow];
+    currentRowValue = rowValues[currentRow];
 
     switch(event.key) {
         case "Backspace":
@@ -28,28 +29,72 @@ function checkForDown(event)
                     }
                 }
                 currentRowValue = decoy;
-                refractorValue(currentRowValue, false);
-                rowValuesPre[currentRow] = currentRowValue;
+                refractorValue(false);
+                rowValues[currentRow] = currentRowValue;
             }
 
             break;
         case "Enter":
             event.preventDefault();
-            refractorValue(currentRowValue, false);
+            refractorValue(false);
             makeLine();
-            currentRowValue = "";
+            if(currentRowValue[currentRowValue.length - 1] == "{") {
+                currentRowValue = "    ";
+                refractorValue(false);
+                rowValues[currentRow] = currentRowValue;
+            }
+            break;
+        case "Tab":
+            event.preventDefault();
+            currentRowValue += "    ";
+            refractorValue(true)
+            rowValues[currentRow] = currentRowValue;
+            break;
+        case "ArrowLeft":
+            if(currentRowValue != "") {
+                let decoy1 = "";
+                let decoy2 = "";
+                for (var i = 0; i < currentRowValue.length; i++) {
+                    if (i != currentRowValue.length - 1) {
+                        decoy1 += currentRowValue[i];
+                    }
+                    else {
+                        decoy2 += currentRowValue[i];
+                        decoy2 += remaining;
+                    }
+                }
+                currentRowValue = decoy1;
+                remaining = decoy2;
+                refractorValue(false);
+                rowValues[currentRow] = currentRowValue;
+            }
+            break;
+        case "ArrowRight":
+            let decoy = "";
+            for (var i = 0; i < remaining.length; i++) {
+                if (i != 0) {
+                    decoy += remaining[i];
+                }
+                else {
+                    currentRowValue += remaining[i];
+                }
+            }
+            remaining = decoy;
+            refractorValue(false);
+            rowValues[currentRow] = currentRowValue;
             break;
         default:
-            if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]|".includes(event.key.toLowerCase())) {
+            if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|".includes(event.key.toLowerCase())) {
                 event.preventDefault();
                 currentRowValue += event.key;
-                refractorValue(currentRowValue, true);
-                rowValuesPre[currentRow] = currentRowValue;
+                refractorValue(true);
+                rowValues[currentRow] = currentRowValue;
             }
     }
 }
 
-function refractorValue(value, space) {// Parses input field and puts its content into spans
+function refractorValue(space) { // Parses input field and puts its content into spans
+    let value = currentRowValue + remaining;
     let activeRow = document.getElementById("row" + currentRow);
     while (activeRow.firstChild) {
         activeRow.removeChild(activeRow.firstChild);

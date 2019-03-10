@@ -17,8 +17,10 @@ function makeLine() {
     rowsouter = newOuterRow;
     row++;
     currentRow++;
+    currentRowValue = "";
+    remaining = "";
 
-    rowValuesPre[currentRow] = "";
+    rowValues[currentRow] = "";
 }
 
 function deleteLine() {
