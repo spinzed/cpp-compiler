@@ -36,7 +36,6 @@ function deleteLine() {
 function makeSpan(content, type, space = true) {
     let parsedContent = parseToHTML(content);
     let span = document.createElement("span");
-    span.setAttribute("contenteditable", "true")
     if (space) {
         span.innerHTML = parsedContent + "&nbsp;";
     }

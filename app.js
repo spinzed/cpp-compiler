@@ -113,6 +113,7 @@ function refractorValue(space) { // Parses input field and puts its content into
     }
 
     input.value = "";
+    input.setAttribute("style", "left: " + (390 +(8.8 * value.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
 function focusInput() {
