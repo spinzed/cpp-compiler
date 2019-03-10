@@ -1,8 +1,6 @@
 const editor = document.getElementById("editor");
 const input = document.getElementById("input");
 const rows = document.getElementById("rows");
-var rowsouter = document.getElementById("rowsouter1");
-var rowdiv = document.getElementById("row1")
 input.addEventListener("keydown", checkForDown);
 var row = 1; // # of rows
 var column = 1; // # of words in the current row
@@ -51,8 +49,7 @@ function checkForDown(event)
     }
 }
 
-function refractorValue(value, space) // Parses input field and puts its content into spans
-{
+function refractorValue(value, space) {// Parses input field and puts its content into spans
     let activeRow = document.getElementById("row" + currentRow);
     while (activeRow.firstChild) {
         activeRow.removeChild(activeRow.firstChild);

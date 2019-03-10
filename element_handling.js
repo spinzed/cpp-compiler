@@ -15,7 +15,6 @@ function makeLine() {
     column = 1;
     currentColumn = 1;
     rowsouter = newOuterRow;
-    rowdiv = newRow;
     row++;
     currentRow++;
 
@@ -52,6 +51,7 @@ function makeSpan(content, type, space = true) {
         elem1.id = currentRow + "_" + (i + 1);
     }
 
+    let rowdiv = document.getElementById("row" + currentRow)
     rowdiv.appendChild(span);
 
     column++;
