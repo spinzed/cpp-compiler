@@ -18,7 +18,6 @@ function makeLine() {
     currentRow++;
     currentRowValue = "";
     remaining = "";
-
     rowValues[currentRow] = "";
 }
 
@@ -30,6 +29,7 @@ function deleteLine() {
     currentRow--;
     column = columnArray[currentRow];
     currentColumn = columnArray[currentRow];
+    currentRowValue = rowValues[currentRow];
 }
 
 function makeSpan(content, type, space = true) {

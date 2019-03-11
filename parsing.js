@@ -83,7 +83,7 @@ function parseToArray(string)
     let arr = [string];
     let result = [];
     let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">", "\"", "\'"];
-    let keywords = ["using", "namespace", "#include"]
+    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char"]
     let finalcheck = signs.concat(keywords);
     finalcheck.forEach(sign => { // every sign
         for(var j = 0; j < arr.length; j++) { // every word

@@ -12,7 +12,7 @@ var remaining = "";
 
 function checkForDown(event)
 {
-    currentRowValue = rowValues[currentRow];
+    currentRowValue = rowValues[currentRow]; // just in case
 
     switch(event.key) {
         case "Backspace":
@@ -29,18 +29,15 @@ function checkForDown(event)
                 }
                 currentRowValue = decoy;
                 refractorValue(false);
-                rowValues[currentRow] = currentRowValue;
             }
-
             break;
         case "Enter":
             event.preventDefault();
             refractorValue(false);
             makeLine();
-            if(currentRowValue[currentRowValue.length - 1] == "{") {
+            if(rowValues[currentRow - 1][rowValues[currentRow - 1] - 1] == "{") {
                 currentRowValue = "    ";
                 refractorValue(false);
-                rowValues[currentRow] = currentRowValue;
             }
             break;
         case "Delete":
@@ -60,7 +57,6 @@ function checkForDown(event)
             event.preventDefault();
             currentRowValue += "    ";
             refractorValue(true)
-            rowValues[currentRow] = currentRowValue;
             break;
         case "ArrowLeft":
             if(currentRowValue != "") {
@@ -78,7 +74,6 @@ function checkForDown(event)
                 currentRowValue = decoy1;
                 remaining = decoy2;
                 refractorValue(false);
-                rowValues[currentRow] = currentRowValue;
             }
             break;
         case "ArrowRight":
@@ -93,7 +88,6 @@ function checkForDown(event)
             }
             remaining = decoy;
             refractorValue(false);
-            rowValues[currentRow] = currentRowValue;
             break;
         case "ArrowUp":
             if(currentRow != 1) {
@@ -115,7 +109,6 @@ function checkForDown(event)
                 remaining = decoy2;
             }
             refractorValue(false);
-            rowValues[currentRow] = currentRowValue;
             break;
         case "ArrowDown":
             if(currentRow != columnArray.length) {
@@ -136,16 +129,15 @@ function checkForDown(event)
                 remaining = decoy2;
             }
             refractorValue(false);
-            rowValues[currentRow] = currentRowValue;
             break;
         default:
-            if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|".includes(event.key.toLowerCase())) {
+            if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|".includes(event.key.toLowerCase())) {
                 event.preventDefault();
                 currentRowValue += event.key;
                 refractorValue(true);
-                rowValues[currentRow] = currentRowValue;
             }
     }
+    input.setAttribute("style", "left: " + (390 + (8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
 function refractorValue(space) { // Parses input field and puts its content into spans
@@ -168,7 +160,7 @@ function refractorValue(space) { // Parses input field and puts its content into
     }
 
     input.value = "";
-    input.setAttribute("style", "left: " + (390 +(8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
+    rowValues[currentRow] = currentRowValue;
 }
 
 function focusInput() {
