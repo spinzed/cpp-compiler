@@ -2,7 +2,6 @@ const editor = document.getElementById("editor");
 const input = document.getElementById("input");
 const rows = document.getElementById("rows");
 input.addEventListener("keydown", checkForDown);
-var row = 1; // # of rows
 var column = 1; // # of words in the current row
 var currentRow = 1; // # of the active row
 var currentColumn = 1; // # of the active word in a row
@@ -83,6 +82,49 @@ function checkForDown(event)
             refractorValue(false);
             rowValues[currentRow] = currentRowValue;
             break;
+        case "ArrowUp":
+            if(currentRow != 1) {
+                let len = currentRowValue.length;
+                rowValues[currentRow] = currentRowValue + remaining;
+                currentRow--;
+                currentRowValue = rowValues[currentRow];
+                let decoy1 = "";
+                let decoy2 = "";
+                for(var i = 0; i < currentRowValue.length; i++) {
+                    if(i < len) {
+                        decoy1 += currentRowValue[i];
+                    }
+                    else {
+                        decoy2 += currentRowValue[i];
+                    }
+                }
+                currentRowValue = decoy1;
+                remaining = decoy2;
+            }
+            refractorValue(false);
+            rowValues[currentRow] = currentRowValue;
+            break;
+        case "ArrowDown":
+            if(currentRow != columnArray.length) {
+                let len = currentRowValue.length;
+                currentRow++;
+                currentRowValue = rowValues[currentRow];
+                let decoy1 = "";
+                let decoy2 = "";
+                for (var i = 0; i < currentRowValue.length; i++) {
+                    if (i < len) {
+                        decoy1 += currentRowValue[i];
+                    }
+                    else {
+                        decoy2 += currentRowValue[i];
+                    }
+                }
+                currentRowValue = decoy1;
+                remaining = decoy2;
+            }
+            refractorValue(false);
+            rowValues[currentRow] = currentRowValue;
+            break;
         default:
             if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|".includes(event.key.toLowerCase())) {
                 event.preventDefault();
@@ -113,7 +155,7 @@ function refractorValue(space) { // Parses input field and puts its content into
     }
 
     input.value = "";
-    input.setAttribute("style", "left: " + (390 +(8.8 * value.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
+    input.setAttribute("style", "left: " + (390 +(8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
 function focusInput() {

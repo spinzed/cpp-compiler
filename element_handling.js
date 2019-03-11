@@ -1,13 +1,13 @@
 function makeLine() {
-    columnArray[row] = column;
+    columnArray[currentRow] = column;
 
     let newOuterRow = document.createElement("div");
     newOuterRow.classList.add("rowsouter");
-    newOuterRow.id = "rowsouter" + (row + 1);
+    newOuterRow.id = "rowsouter" + (currentRow + 1);
 
     let newRow = document.createElement("div");
     newRow.classList.add("rows");
-    newRow.id = "row" + (row + 1);
+    newRow.id = "row" + (currentRow + 1);
 
     rows.appendChild(newOuterRow);
     newOuterRow.appendChild(newRow);
@@ -15,7 +15,6 @@ function makeLine() {
     column = 1;
     currentColumn = 1;
     rowsouter = newOuterRow;
-    row++;
     currentRow++;
     currentRowValue = "";
     remaining = "";
@@ -27,10 +26,10 @@ function deleteLine() {
     rowsouter = document.getElementById("rowsouter" + currentRow);
     rowsouter.parentNode.removeChild(rowsouter);
 
-    row--;
+    columnArray.splice(currentRow, 1)
     currentRow--;
-    column = columnArray[row];
-    currentColumn = columnArray[row];
+    column = columnArray[currentRow];
+    currentColumn = columnArray[currentRow];
 }
 
 function makeSpan(content, type, space = true) {
