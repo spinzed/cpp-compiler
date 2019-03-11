@@ -43,6 +43,19 @@ function checkForDown(event)
                 rowValues[currentRow] = currentRowValue;
             }
             break;
+        case "Delete":
+            event.preventDefault();
+            if(remaining != "") {
+                let decoy = "";
+                for(var i = 0; i < remaining.length; i++) {
+                    if(i != 0) {
+                        decoy += remaining[i];
+                    }
+                }
+                remaining = decoy;
+                refractorValue(false);
+            }
+            break;
         case "Tab":
             event.preventDefault();
             currentRowValue += "    ";
