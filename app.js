@@ -15,6 +15,16 @@ function checkForDown(event)
     currentRowValue = rowValues[currentRow]; // just in case
 
     switch(event.key) {
+        case "Enter":
+            event.preventDefault();
+            refractorValue(false);
+            makeLine();
+            let previousRowValue = rowValues[currentRow-1]
+            if(previousRowValue[previousRowValue.length - 1] == "{") {
+                currentRowValue = "    ";
+                refractorValue(false);
+            }
+            break;
         case "Backspace":
             event.preventDefault();
             if(currentRowValue == "" && currentRow != 1) {
@@ -28,15 +38,6 @@ function checkForDown(event)
                     }
                 }
                 currentRowValue = decoy;
-                refractorValue(false);
-            }
-            break;
-        case "Enter":
-            event.preventDefault();
-            refractorValue(false);
-            makeLine();
-            if(rowValues[currentRow - 1][rowValues[currentRow - 1] - 1] == "{") {
-                currentRowValue = "    ";
                 refractorValue(false);
             }
             break;
