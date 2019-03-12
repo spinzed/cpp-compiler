@@ -40,6 +40,7 @@ function checkForDown(event)
                 currentRowValue = decoy;
                 refractorValue(false);
             }
+            refreshInput();
             break;
         case "Delete":
             event.preventDefault();
@@ -53,6 +54,7 @@ function checkForDown(event)
                 remaining = decoy;
                 refractorValue(false);
             }
+            refreshInput();
             break;
         case "Tab":
             event.preventDefault();
