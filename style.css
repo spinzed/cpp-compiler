@@ -69,6 +69,7 @@ header {
     font-size: inherit;
     line-height: 20px;
     width: 100px;
+    transition: all 0.02s linear;
 }
 .rows {
     display: inline-block;

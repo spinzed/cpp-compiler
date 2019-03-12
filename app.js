@@ -139,12 +139,19 @@ function checkForDown(event)
             refreshInput();
             break;
         default:
-            if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
+            if(event.ctrlKey && event.shiftKey) {
+                // do nothing for now
+            }
+            else if (event.altKey) {
+
+            }
+            else if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
                 event.preventDefault();
                 currentRowValue += event.key;
                 refractorValue(true);
             }
     }
+    input.value = "";
     input.setAttribute("style", "left: " + (390 + (8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
@@ -167,7 +174,6 @@ function refractorValue(space) { // Parses input field and puts its content into
         }
     }
 
-    input.value = "";
     rowValues[currentRow] = currentRowValue;
 }
 
