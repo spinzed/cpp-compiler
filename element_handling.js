@@ -11,11 +11,14 @@ function makeLine() {
 
     rows.appendChild(newOuterRow);
     newOuterRow.appendChild(newRow);
+    rowsouter = newOuterRow;
 
+    rowValues[currentRow] = currentRowValue;
+
+    //new row
+    currentRow++;
     column = 1;
     currentColumn = 1;
-    rowsouter = newOuterRow;
-    currentRow++;
     currentRowValue = "";
     remaining = "";
     rowValues[currentRow] = "";

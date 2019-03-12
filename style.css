@@ -18,7 +18,7 @@ header {
     top: 100px;
     bottom : 0;
 }
-.sidebar {
+#sidebar {
     position: relative;
     top: 0;
     bottom: 0;
@@ -99,5 +99,5 @@ header {
     color: #c84db4;
 }
 .string {
-    color: #3ea357;
+    color: #4ed677;
 }

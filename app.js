@@ -76,6 +76,7 @@ function checkForDown(event)
                 remaining = decoy2;
                 refractorValue(false);
             }
+            refreshInput();
             break;
         case "ArrowRight":
             let decoy = "";
@@ -89,6 +90,7 @@ function checkForDown(event)
             }
             remaining = decoy;
             refractorValue(false);
+            refreshInput();
             break;
         case "ArrowUp":
             if(currentRow != 1) {
@@ -110,10 +112,12 @@ function checkForDown(event)
                 remaining = decoy2;
             }
             refractorValue(false);
+            refreshInput();
             break;
         case "ArrowDown":
             if(currentRow != columnArray.length) {
                 let len = currentRowValue.length;
+                rowValues[currentRow] = currentRowValue + remaining;
                 currentRow++;
                 currentRowValue = rowValues[currentRow];
                 let decoy1 = "";
@@ -130,9 +134,10 @@ function checkForDown(event)
                 remaining = decoy2;
             }
             refractorValue(false);
+            refreshInput();
             break;
         default:
-            if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|".includes(event.key.toLowerCase())) {
+            if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
                 event.preventDefault();
                 currentRowValue += event.key;
                 refractorValue(true);
@@ -162,6 +167,13 @@ function refractorValue(space) { // Parses input field and puts its content into
 
     input.value = "";
     rowValues[currentRow] = currentRowValue;
+}
+
+function refreshInput() {
+    let sidebar = document.getElementById("sidebar");
+    sidebar.removeChild(input);
+    sidebar.appendChild(input);
+    input.focus();
 }
 
 function focusInput() {

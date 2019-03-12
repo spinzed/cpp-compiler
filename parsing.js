@@ -40,10 +40,10 @@ function getType(variable)
         case ">":
             return "sign";
         default:
-            if(variable[0]=="\"" && variable[variable.length]=="\"") {
+            if(variable[0]=="\"" && variable[variable.length - 1]=="\"") {
                 return "string";
             }
-            if(variable[0]=="\'" && variable[variable.length]=="\'") {
+            if(variable[0]=="\'" && variable[variable.length - 1]=="\'") {
                 return "string";
             }
             return "textgnrc";
@@ -82,9 +82,14 @@ function parseToArray(string)
 {
     let arr = [string];
     let result = [];
-    let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">", "\"", "\'"];
-    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char"]
-    let finalcheck = signs.concat(keywords);
+    let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">"];
+    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char"];
+    let special = ["\"", "'"];
+    let finalcheck = [];
+    for(var i = 0; i < 10; i++) {
+        finalcheck.push(String(i));
+    }
+    finalcheck = finalcheck.concat(signs).concat(keywords).concat(special)
     finalcheck.forEach(sign => { // every sign
         for(var j = 0; j < arr.length; j++) { // every word
             let word = arr[j];
