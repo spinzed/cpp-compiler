@@ -1,75 +1,72 @@
 function makeLine() {
-    columnArray[currentRow] = column;
-
-    let newOuterRow = document.createElement("div");
-    newOuterRow.classList.add("rowsouter");
-    newOuterRow.id = "rowsouter" + (currentRow + 1);
-
+    columnsInRows[currentRow] = column;
+    shiftRowsDown();
+    
     let newRow = document.createElement("div");
     newRow.classList.add("rows");
     newRow.id = "row" + (currentRow + 1);
-
-    rows.appendChild(newOuterRow);
-    newOuterRow.appendChild(newRow);
-    rowsouter = newOuterRow;
-
+    rows.appendChild(newRow);
     rowValues[currentRow] = currentRowValue;
 
     //new row
     currentRow++;
-    column = 1;
-    currentColumn = 1;
+    currentRowColumn = 1;
     currentRowValue = "";
     remaining = "";
     rowValues[currentRow] = "";
 }
 
-function deleteLine() {
-    rowsouter = document.getElementById("rowsouter" + currentRow);
-    rowsouter.parentNode.removeChild(rowsouter);
+function deleteLine(targetedRow = currentRow) {
+    let targetedRowDiv = document.getElementById("row" + targetedRow);
+    rows.removeChild(targetedRowDiv);
 
-    columnArray.splice(currentRow, 1)
+    columnsInRows.splice(targetedRow, 1)
+    rowValues.splice(targetedRow, 1)
+
     currentRow--;
-    column = columnArray[currentRow];
-    currentColumn = columnArray[currentRow];
+    currentRowColumn = columnsInRows[currentRow];
     currentRowValue = rowValues[currentRow];
 }
 
-function makeSpan(content, type, space = true) {
+function makeSpan(content, targetedRow, space = true) {
     let parsedContent = parseToHTML(content);
     let span = document.createElement("span");
-    if (space) {
+    if(space) {
         span.innerHTML = parsedContent + "&nbsp;";
     }
     else {
         span.innerHTML = parsedContent;
     }
     span.classList.add("textspan");
-    span.classList.add(type);
-    span.id = currentRow + "_" + currentColumn;
-    span.setAttribute("onclick", "changeActiveSpan.call(this)")
+    span.classList.add(getType(content));
+    span.id = targetedRow + "_" + columnsInRows[targetedRow];
+    span.setAttribute("onclick", "changeActiveSpan.call(this)") // currently does nothing
 
-    for (var i = column; i > currentColumn; i--) {
-        let elem1 = document.getElementById(currentRow + "_" + i);
-        elem1.id = currentRow + "_" + (i + 1);
+    for (var i = column; i > currentRowColumn; i--) {
+        let elem1 = document.getElementById(targetedRow + "_" + i);
+        elem1.id = targetedRow + "_" + (i + 1);
     }
 
-    let rowdiv = document.getElementById("row" + currentRow)
+    let rowdiv = document.getElementById("row" + targetedRow)
     rowdiv.appendChild(span);
-
-    column++;
-    currentColumn++;
+    columnsInRows[targetedRow] = columnsInRows[targetedRow] + 1;
 }
 
-function deleteLastSpan(event) {
-    event.preventDefault();
+function shiftRowsDown() {
+    let newRow = document.createElement("div");
+    newRow.classList.add("rows");
+    newRow.id = "row" + (rowValues.length);;
+    
+    for(var i = currentRow; i < rowValues.length - 1; i++) {
+        if(i == currentRow) {
+            rows.appendChild(newRow);
+            rowValues.splice(currentRow + 1, 0, "");
+        }
+        console.log(currentRow + "     " + (rowValues.length-1))
+        refractorValue(false, i);
+    }
+}
 
-    let loadspan = document.getElementById(currentRow + "_" + (currentColumn - 1));
-
-    input.value = loadspan.innerHTML;
-    input.value = parseFromHTML(input.value);
-
-    loadspan.parentNode.removeChild(loadspan);
-    column--;
-    currentColumn--;
+function getDictLength(dict) {
+    return Object.keys(dict).length;
 }

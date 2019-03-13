@@ -3,7 +3,7 @@ function parseID(id)
     let idarr = [];
     idarr = id.split("_");
     currentRow = idarr[0];
-    currentColumn = idarr[1];
+    currentRowColumn = idarr[1];
 }
 
 function getType(variable)

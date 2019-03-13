@@ -2,11 +2,10 @@ const editor = document.getElementById("editor");
 const input = document.getElementById("input");
 const rows = document.getElementById("rows");
 input.addEventListener("keydown", checkForDown);
-var column = 1; // # of words in the current row
 var currentRow = 1; // # of the active row
-var currentColumn = 1; // # of the active word in a row
-var columnArray = [null]
-var rowValues = { 1: "" };
+var currentRowColumn = 1; // # of the active word in a row
+var columnsInRows = [null, 0];
+var rowValues = [null, ""];
 var currentRowValue = "";
 var remaining = "";
 
@@ -65,24 +64,25 @@ function checkForDown(event)
             if(currentRowValue != "") {
                 let decoy1 = "";
                 let decoy2 = "";
-                for (var i = 0; i < currentRowValue.length; i++) {
-                    if (i != currentRowValue.length - 1) {
+                for(var i = 0; i < currentRowValue.length; i++) {
+                    if(i != currentRowValue.length - 1) {
                         decoy1 += currentRowValue[i];
                     }
                     else {
                         decoy2 += currentRowValue[i];
-                        decoy2 += remaining;
                     }
                 }
+                decoy2 += remaining;
                 currentRowValue = decoy1;
                 remaining = decoy2;
+                rowValues[currentRow] = currentRowValue;
                 refractorValue(false);
             }
             refreshInput();
             break;
         case "ArrowRight":
             let decoy = "";
-            for (var i = 0; i < remaining.length; i++) {
+            for(var i = 0; i < remaining.length; i++) {
                 if (i != 0) {
                     decoy += remaining[i];
                 }
@@ -91,6 +91,7 @@ function checkForDown(event)
                 }
             }
             remaining = decoy;
+            rowValues[currentRow] = currentRowValue;
             refractorValue(false);
             refreshInput();
             break;
@@ -117,7 +118,7 @@ function checkForDown(event)
             refreshInput();
             break;
         case "ArrowDown":
-            if(currentRow != columnArray.length) {
+            if(currentRow != columnsInRows.length - 1) {
                 let len = currentRowValue.length;
                 rowValues[currentRow] = currentRowValue + remaining;
                 currentRow++;
@@ -155,26 +156,37 @@ function checkForDown(event)
     input.setAttribute("style", "left: " + (390 + (8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
-function refractorValue(space) { // Parses input field and puts its content into spans
-    let value = currentRowValue + remaining;
-    let activeRow = document.getElementById("row" + currentRow);
-    while (activeRow.firstChild) {
-        activeRow.removeChild(activeRow.firstChild);
+function refractorValue(space, targetedRow = currentRow) { // Parses input field and puts its content into spans
+    let value = "";
+    if(targetedRow == currentRow) {
+        value = currentRowValue + remaining;
     }
+    else {
+        value = rowValues[targetedRow];
+    }
+    let targetedRowNode = document.getElementById("row" + targetedRow);
+    while(targetedRowNode.firstChild) {
+        targetedRowNode.removeChild(targetedRowNode.firstChild);
+    }
+    columnsInRows[targetedRow] = 0;
     column = 1;
-    currentColumn = 1;
+    currentRowColumn = 1;
 
     let elements = parseToArray(value);
     for (var i = 0; i < elements.length; i++) {
         if (i == elements.length - 1) {
-            makeSpan(elements[i], getType(elements[i]), space);
+            makeSpan(elements[i], targetedRow, space);
         }
         else {
-            makeSpan(elements[i], getType(elements[i]), false);
+            makeSpan(elements[i], targetedRow, false);
         }
     }
-
-    rowValues[currentRow] = currentRowValue;
+    if (targetedRow == currentRow) {
+        rowValues[targetedRow] = currentRowValue;
+    }
+    else {
+        rowValues[targetedRow] = value;
+    }
 }
 
 function refreshInput() {
