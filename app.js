@@ -17,12 +17,12 @@ function checkForDown(event)
         case "Enter":
             event.preventDefault();
             refractorValue(false);
-            makeLine();
+            nextLine();
             let previousRowValue = rowValues[currentRow-1]
             if(previousRowValue[previousRowValue.length - 1] == "{") {
-                currentRowValue = "    ";
-                refractorValue(false);
+                currentRowValue += "    ";
             }
+            refractorValue(false);
             break;
         case "Backspace":
             event.preventDefault();
@@ -187,20 +187,4 @@ function refractorValue(space, targetedRow = currentRow) { // Parses input field
     else {
         rowValues[targetedRow] = value;
     }
-}
-
-function refreshInput() {
-    let sidebar = document.getElementById("sidebar");
-    sidebar.removeChild(input);
-    sidebar.appendChild(input);
-    input.focus();
-}
-
-function focusInput() {
-    input.focus();
-}
-
-function updateTempSpan()
-{
-
 }
