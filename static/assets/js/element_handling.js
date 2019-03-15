@@ -84,9 +84,8 @@ function getRowCount() {
 }
 
 function refreshInput() {
-    let sidebar = document.getElementById("sidebar");
-    sidebar.removeChild(input);
-    sidebar.appendChild(input);
+    editor.removeChild(input);
+    editor.appendChild(input);
     input.focus();
 }
 

@@ -153,7 +153,7 @@ function checkForDown(event)
             }
     }
     input.value = "";
-    input.setAttribute("style", "left: " + (390 + (8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
+    input.setAttribute("style", "left: " + (10 + (8.8 * currentRowValue.length)) + "px; top: " + ((currentRow - 1) * 20) + "px");
 }
 
 function refractorValue(space, targetedRow = currentRow) { // Parses input field and puts its content into spans
