@@ -3,3 +3,4 @@
 test/
 node_test/
 *.code-workspace
+__pycache__/
