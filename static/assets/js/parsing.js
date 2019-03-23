@@ -1,11 +1,3 @@
-function parseID(id)
-{
-    let idarr = [];
-    idarr = id.split("_");
-    currentRow = idarr[0];
-    currentRowColumn = idarr[1];
-}
-
 function getType(variable)
 {
     switch (variable)

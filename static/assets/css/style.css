@@ -34,7 +34,7 @@ header {
     display: flex;
 }
 
-#editor_core {
+#editor {
     flex: 1;
     display: flex;
 }
@@ -44,7 +44,7 @@ header {
     width: 80px;
     background: #272729;
 }
-#editor {
+#editor_core {
     position: relative;
     display: flex;
     flex: 1;

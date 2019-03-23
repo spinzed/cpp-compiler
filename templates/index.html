@@ -10,19 +10,17 @@
     <header>Test</header>
     <div class="bodyrest">
         <div id="sidebar"></div>
-        <div class="editor_core">
+        <div id="editor">
             <div class="rowline"></div>
             <div class="borderline"></div>
-            <div id="editor">
+            <div id="editor_core">
                 <textarea id="input" spellcheck="false"></textarea>
-                <div id="rows" onclick="focusInput()">
-                    <div class="rows" id="row1"></div>
-                </div>
+                <div id="rows" onclick="input.focus()"></div>
             </div>
         </div>
     </div>
-    <script src="{{ url_for('static', filename='assets/js/app.js') }}" charset="UTF-8"></script>
-    <script src="{{ url_for('static', filename='assets/js/element_handling.js') }}" charset="UTF-8"></script>
+    <script src="{{ url_for('static', filename='assets/js/models.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='assets/js/parsing.js') }}" charset="UTF-8"></script>
+    <script src="{{ url_for('static', filename='assets/js/app.js') }}" charset="UTF-8"></script>
 </body>
 </html>
