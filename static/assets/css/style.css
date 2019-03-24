@@ -69,7 +69,7 @@ header {
     font: inherit;
     font-size: inherit;
     line-height: 20px;
-    width: 100px;
+    width: 1px;
     transition: all 0.02s linear;
 }
 .rows {

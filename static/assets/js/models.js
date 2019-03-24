@@ -25,7 +25,6 @@ class editor {
     }
 
     deleteLine(targetedRow = this.currentRow) {
-
         let targetedRowDiv = document.getElementById("row" + targetedRow);
         rows.removeChild(targetedRowDiv);
 
@@ -37,10 +36,10 @@ class editor {
     }
 
     shiftRowsUp() {
-        for (var i = this.currentRow + 2; i < this.rows.length + 2; i++) {
-            let tempRow = document.getElementById("row" + i);
-            tempRow.id = "row" + (i - 1);
+        for (var i = this.currentRow; i < this.rows.length; i++) {
+            this.rows[i].updateNode(i + 1);
         }
+        this.currentRowNode.updateRow();
     }
 
     shiftRowsDown() {
@@ -156,6 +155,11 @@ class row {
         else {
             ed.rows[this.id - 1].content = value;
         }
+    }
+
+    updateNode(newId) {
+        this.id = newId;
+        this.node.id = "row" + newId;
     }
 }
 
