@@ -44,7 +44,7 @@ function checkForDown(event)
                 ed.remaining = decoy;
                 ed.currentRowNode.updateRow(false);
             }
-            refreshInput();
+            ed.refreshInput();
             break;
         case "Tab":
             event.preventDefault();

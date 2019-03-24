@@ -38,6 +38,7 @@ class editor {
     shiftRowsUp() {
         for (var i = this.currentRow; i < this.rows.length; i++) {
             this.rows[i].updateNode(i + 1);
+            this.rows[i].updateRow();
         }
         this.currentRowNode.updateRow();
     }
@@ -104,28 +105,6 @@ class row {
         ed.rowNode.appendChild(this.node);
     }
 
-    makeSpan(content, space) {
-        let parsedContent = parseToHTML(content);
-        let span = document.createElement("span");
-        if (space) {
-            span.innerHTML = parsedContent + "&nbsp;";
-        }
-        else {
-            span.innerHTML = parsedContent;
-        }
-        span.classList.add("textspan");
-        span.classList.add(getType(content));
-        span.id = this.id + "_" + (this.words + 1);
-        for (var i = this.words; i > parseToArray(this.content).length; i--) {
-            let elem1 = document.getElementById(this.id + "_" + i);
-            elem1.id = this.id + "_" + (i + 1);
-        }
-
-        let rowdiv = document.getElementById("row" + this.id);
-        rowdiv.appendChild(span);
-        this.words++;
-    }
-
     updateRow(space) { // Parses input field and puts its content into spans
         let value = "";
         if (this.id == ed.currentRow) {
@@ -157,6 +136,29 @@ class row {
         }
     }
 
+    makeSpan(content, space) {
+        // console.log(content)
+        let parsedContent = parseToHTML(content);
+        let span = document.createElement("span");
+        if (space) {
+            span.innerHTML = parsedContent + "&nbsp;";
+        }
+        else {
+            span.innerHTML = parsedContent;
+        }
+        span.classList.add("textspan");
+        span.classList.add(getType(content));
+        span.id = this.id + "_" + (this.words + 1);
+        // for (var i = this.words; i > parseToArray(this.content).length; i--) {
+        //     let elem1 = document.getElementById(this.id + "_" + i);
+        //     elem1.id = this.id + "_" + (i + 1);
+        // }
+
+        let rowdiv = document.getElementById("row" + this.id);
+        rowdiv.appendChild(span);
+        this.words++;
+    }
+
     updateNode(newId) {
         this.id = newId;
         this.node.id = "row" + newId;
@@ -170,7 +172,7 @@ class word {
         this.value = content;
     }
     get type() {
-        return getType(content);
+        return getType(this.value);
     }
     get hash() {
         return row + "_" + id;
