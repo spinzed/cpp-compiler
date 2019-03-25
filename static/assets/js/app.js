@@ -6,14 +6,14 @@ function checkForDown(event)
     switch(event.key) {
         case "Enter":
             event.preventDefault();
-            ed.currentRowNode.updateRow(false);
+            ed.currentRowNode.update(false);
             ed.makeNewRow();
             let previousRowValue = ed.rows[ed.currentRow - 1]
             if(previousRowValue[previousRowValue.length - 1] == "{") {
                 ed.currentRowValue += "    ";
             }
-            ed.currentRowNode.updateRow(false);
-            ed.rows[ed.currentRow - 2].updateRow(false);
+            ed.currentRowNode.update(false);
+            ed.rows[ed.currentRow - 2].update(false);
             break;
         case "Backspace":
             event.preventDefault();
@@ -28,7 +28,7 @@ function checkForDown(event)
                     }
                 }
                 ed.currentRowValue = decoy;
-                ed.currentRowNode.updateRow(false);
+                ed.currentRowNode.update(false);
             }
             ed.refreshInput();
             break;
@@ -42,17 +42,23 @@ function checkForDown(event)
                     }
                 }
                 ed.remaining = decoy;
-                ed.currentRowNode.updateRow(false);
+                ed.currentRowNode.update(false);
             }
             ed.refreshInput();
             break;
         case "Tab":
             event.preventDefault();
             ed.currentRowValue += "    ";
-            ed.currentRowNode.updateRow(true)
+            ed.currentRowNode.update(true)
             break;
         case "ArrowLeft":
-            if(ed.currentRowValue != "") {
+            if (ed.currentRowValue == "" && ed.currentRow != 1) {
+                ed.currentRowValue = ed.remaining;
+                ed.remaining = "";
+                ed.currentRow--;
+                ed.currentWord = ed.currentRowNode.words;
+            }
+            else if(ed.currentRowValue != "") {
                 let decoy1 = "";
                 let decoy2 = "";
                 for(var i = 0; i < ed.currentRowValue.length; i++) {
@@ -61,27 +67,35 @@ function checkForDown(event)
                     }
                     else {
                         decoy2 += ed.currentRowValue[i];
-                    }
-                }
-                decoy2 += ed.remaining;
+                    }                }
+                decoy2 +=
+                 ed.remaining;
                 ed.currentRowValue = decoy1;
                 ed.remaining = decoy2;
-                ed.currentRowNode.updateRow(false);
+                ed.currentRowNode.update(false);
             }
             ed.refreshInput();
             break;
         case "ArrowRight":
-            let decoy = "";
-            for(var i = 0; i < ed.remaining.length; i++) {
-                if (i != 0) {
-                    decoy += ed.remaining[i];
-                }
-                else {
-                    ed.currentRowValue += ed.remaining[i];
-                }
+            if (ed.remaining == "" && ed.currentRow != ed.rows.length) {
+                ed.currentRow++;
+                ed.remaining = ed.currentRowValue;
+                ed.currentRowValue = "";
+                ed.currentWord = 0;
             }
-            ed.remaining = decoy;
-            ed.currentRowNode.updateRow(false);
+            else {
+                let decoy = "";
+                for(var i = 0; i < ed.remaining.length; i++) {
+                    if (i != 0) {
+                        decoy += ed.remaining[i];
+                    }
+                    else {
+                        ed.currentRowValue += ed.remaining[i];
+                    }
+                }
+                ed.remaining = decoy;
+                ed.currentRowNode.update(false);
+            }
             ed.refreshInput();
             break;
         case "ArrowUp":
@@ -102,7 +116,7 @@ function checkForDown(event)
                 ed.currentRowValue = decoy1;
                 ed.remaining = decoy2;
             }
-            ed.currentRowNode.updateRow(false);
+            ed.currentRowNode.update(false);
             ed.refreshInput();
             break;
         case "ArrowDown":
@@ -123,7 +137,7 @@ function checkForDown(event)
                 ed.currentRowValue = decoy1;
                 ed.remaining = decoy2;
             }
-            ed.currentRowNode.updateRow(false);
+            ed.currentRowNode.update(false);
             ed.refreshInput();
             break;
         default:
@@ -136,7 +150,7 @@ function checkForDown(event)
             else if(" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
                 event.preventDefault();
                 ed.currentRowValue += event.key;
-                ed.currentRowNode.updateRow(true);
+                ed.currentRowNode.update(true);
             }
     }
     input.value = "";

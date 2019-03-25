@@ -20,7 +20,7 @@ class editor {
 
         this.currentRow++;
         if (ed.currentRow != 1) { 
-            ed.rows[ed.currentRow - 1].updateRow(false) // this is needed because remaining value is transfered to another line, will skip if its the first line
+            ed.currentRowNode.update(false) // this is needed because remaining value is transfered to another line, will skip if its the first line
         }
     }
 
@@ -31,16 +31,16 @@ class editor {
         this.rows.splice(targetedRow - 1, 1)
 
         this.currentRow--;
-        this.currentWord = this.rows[this.currentRow - 1].words;
+        this.currentWord = this.currentRowNode.words;
         this.shiftRowsUp();
     }
 
     shiftRowsUp() {
         for (var i = this.currentRow; i < this.rows.length; i++) {
             this.rows[i].updateNode(i + 1);
-            this.rows[i].updateRow();
+            this.rows[i].update();
         }
-        this.currentRowNode.updateRow();
+        this.currentRowNode.update();
     }
 
     shiftRowsDown() {
@@ -49,7 +49,7 @@ class editor {
                 let newRow = new row(this.rows.length + 1);
                 this.rows.push(newRow);
                 ed.rows[i].content = ed.rows[i - 1].content;
-                ed.rows[i].updateRow(false);
+                ed.rows[i].update(false);
             }
             if (i > this.currentRow + 1) {  // skips at first row creation
                 ed.rows[i - 1].content = ed.rows[i - 2].content;
@@ -57,7 +57,7 @@ class editor {
             if (i == this.currentRow + 1) {
                 ed.rows[i - 1].content = "";
             }
-            ed.rows[i - 1].updateRow(false);
+            ed.rows[i - 1].update(false);
         }
     }
 
@@ -105,7 +105,7 @@ class row {
         ed.rowNode.appendChild(this.node);
     }
 
-    updateRow(space) { // Parses input field and puts its content into spans
+    update(space) { // Parses input field and puts its content into spans
         let value = "";
         if (this.id == ed.currentRow) {
             value = ed.currentRowValue + ed.remaining;
