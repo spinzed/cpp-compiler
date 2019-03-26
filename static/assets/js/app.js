@@ -8,8 +8,8 @@ function checkForDown(event)
             event.preventDefault();
             ed.currentRowNode.update(false);
             ed.makeNewRow();
-            let previousRowValue = ed.rows[ed.currentRow - 1]
-            if(previousRowValue[previousRowValue.length - 1] == "{") {
+            let previousRowContent = ed.rows[ed.currentRow - 2].content;
+            if(previousRowContent[previousRowContent.length - 1] == "{") {
                 ed.currentRowValue += "    ";
             }
             ed.currentRowNode.update(false);
