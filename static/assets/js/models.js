@@ -103,6 +103,7 @@ class row {
         this.node.id = "row" + this.id;
         this.node.classList.add("rows");
         ed.rowNode.appendChild(this.node);
+        this.node.setAttribute("onclick", "focusRow.call(this)")
     }
 
     update(space) { // Parses input field and puts its content into spans
