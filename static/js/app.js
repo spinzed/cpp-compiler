@@ -9,7 +9,14 @@ function checkForDown(event)
             ed.currentRowNode.update(false);
             ed.makeNewRow();
             let previousRowContent = ed.rows[ed.currentRow - 2].content;
-            if(previousRowContent[previousRowContent.length - 1] == "{") {
+            if (previousRowContent[previousRowContent.length - 1] == "{") {
+                ed.currentRowValue += "    ";
+                ed.makeNewRow();
+                ed.currentRowValue += "}";
+                ed.currentRowNode.update(false);
+                ed.currentRow--;
+            }
+            else if (previousRowContent.substring(0, 4) == "    ") {
                 ed.currentRowValue += "    ";
             }
             ed.currentRowNode.update(false);
