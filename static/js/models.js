@@ -106,10 +106,10 @@ class row {
         this.node.setAttribute("onclick", "focusRow.call(this)")
     }
 
-    update(space) { // Parses input field and puts its content into spans
+    update(space, forceRemaining = false) { // Parses input field and puts its content into spans
         let value = "";
-        if (this.id == ed.currentRow) {
-            value = ed.currentRowValue + ed.remaining;
+        if (this.id == ed.currentRow || forceRemaining == true) {
+            value = ed.rows[this.id - 1].content + ed.remaining;
         }
         else {
             value = ed.rows[this.id - 1].content;
