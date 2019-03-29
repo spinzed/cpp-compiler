@@ -160,6 +160,16 @@ class row {
         this.words++;
     }
 
+    countTabs() {
+        let content = this.content;
+        let count = 0;
+        while(content.substring(0,4)=="    ") {
+            content = content.substring(4,content.length);
+            count++;
+        }
+        return count;
+    }
+
     updateNode(newId) {
         this.id = newId;
         this.node.id = "row" + newId;

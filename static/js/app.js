@@ -16,8 +16,8 @@ function checkForDown(event)
                 ed.currentRowNode.update(false);
                 ed.currentRow--;
             }
-            else if (previousRowContent.substring(0, 4) == "    ") {
-                ed.currentRowValue += "    ";
+            for (let i = 0; i < ed.rows[ed.currentRow - 2].countTabs(); i++) {
+                ed.currentRowValue += "    "; // inserts tab for every tab in row before
             }
             ed.currentRowNode.update(false);
             ed.rows[ed.currentRow - 2].update(false);
