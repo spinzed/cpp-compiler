@@ -12,6 +12,9 @@ function checkForDown(event)
             if (previousRowContent[previousRowContent.length - 1] == "{") {
                 ed.currentRowValue += "    ";
                 ed.makeNewRow();
+                for (let i = 0; i < ed.rows[ed.currentRow - 3].countTabs(); i++) {
+                    ed.currentRowValue += "    "; // inserts tab for every tab in row before
+                }
                 ed.currentRowValue += "}";
                 ed.currentRowNode.update(false);
                 ed.currentRow--;
