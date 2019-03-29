@@ -4,6 +4,7 @@ test/
 node_test/
 *.code-workspace
 __pycache__/
+*.bat
 
 #venv
 venv/
