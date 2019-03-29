@@ -8,19 +8,20 @@ class editor {
         this.currentRow = 0; // id of the active row
         this.currentWord = 0; // id of the active word in a row
         this.remaining = "";
+        this.makeNewRow();
     }
 
     makeNewRow() {
         this.shiftRowsDown(); // this will take care of everything if the row isnt the last one
 
         if (this.rows.length == this.currentRow) { // it will do this is this is the last row
-            let newRow = new row(ed.currentRow + 1);
+            let newRow = new row(this.currentRow + 1, this);
             this.rows.push(newRow);
         }
 
         this.currentRow++;
-        if (ed.currentRow != 1) { 
-            ed.currentRowNode.update(false) // this is needed because remaining value is transfered to another line, will skip if its the first line
+        if (this.currentRow != 1) { 
+            this.currentRowNode.update(false); // this is needed because remaining value is transfered to another line, will skip if its the first line
         }
     }
 
@@ -46,7 +47,7 @@ class editor {
     shiftRowsDown() {
         for (var i = this.rows.length; i > this.currentRow; i--) { // will not go through if currentrow = rows.length
             if (i == this.rows.length) {
-                let newRow = new row(this.rows.length + 1);
+                let newRow = new row(this.rows.length + 1, this);
                 this.rows.push(newRow);
                 ed.rows[i].content = ed.rows[i - 1].content;
                 ed.rows[i].update(false);
@@ -95,45 +96,46 @@ class editor {
 }
 
 class row {
-    constructor(id) {
+    constructor(id, editor) {
         this.id = id;
         this.words = 0;
         this.content = "";
         this.node = document.createElement("div");
         this.node.id = "row" + this.id;
         this.node.classList.add("rows");
-        ed.rowNode.appendChild(this.node);
+        this.editor = editor;
+        this.editor.rowNode.appendChild(this.node);
         this.node.setAttribute("onclick", "focusRow.call(this)")
     }
 
     update(space, forceRemaining = false) { // Parses input field and puts its content into spans
         let value = "";
-        if (this.id == ed.currentRow || forceRemaining == true) {
-            value = ed.rows[this.id - 1].content + ed.remaining;
+        if (this.id == this.editor.currentRow || forceRemaining == true) {
+            value = this.editor.rows[this.id - 1].content + this.editor.remaining;
         }
         else {
-            value = ed.rows[this.id - 1].content;
+            value = this.editor.rows[this.id - 1].content;
         }
         while (this.node.firstChild) {
             this.node.removeChild(this.node.firstChild);
         }
-        ed.rows[this.id - 1].words = 0;
-        ed.column = 1;
-        ed.currentWord = 1;
+        this.editor.rows[this.id - 1].words = 0;
+        this.editor.column = 1;
+        this.editor.currentWord = 1;
         let elements = parseToArray(value);
         for (var i = 0; i < elements.length; i++) {
             if (i == elements.length - 1) {
-                ed.rows[this.id - 1].makeSpan(elements[i], space);
+                this.editor.rows[this.id - 1].makeSpan(elements[i], space);
             }
             else {
-                ed.rows[this.id - 1].makeSpan(elements[i], false);
+                this.editor.rows[this.id - 1].makeSpan(elements[i], false);
             }
         }
-        if (this.id == ed.currentRow) {
-            ed.rows[this.id - 1].content = ed.currentRowValue;
+        if (this.id == this.editor.currentRow) {
+            this.editor.rows[this.id - 1].content = this.editor.currentRowValue;
         }
         else {
-            ed.rows[this.id - 1].content = value;
+            this.editor.rows[this.id - 1].content = value;
         }
     }
 

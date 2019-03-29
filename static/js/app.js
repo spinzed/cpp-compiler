@@ -1,5 +1,4 @@
 const ed = new editor("editor_core");
-ed.makeNewRow();
 
 function checkForDown(event)
 {
@@ -40,7 +39,6 @@ function checkForDown(event)
                 ed.currentRowValue = decoy;
                 ed.currentRowNode.update(false);
             }
-            ed.refreshInput();
             break;
         case "Delete":
             event.preventDefault();
@@ -54,7 +52,6 @@ function checkForDown(event)
                 ed.remaining = decoy;
                 ed.currentRowNode.update(false);
             }
-            ed.refreshInput();
             break;
         case "Tab":
             event.preventDefault();
@@ -84,7 +81,6 @@ function checkForDown(event)
                 ed.remaining = decoy2;
                 ed.currentRowNode.update(false);
             }
-            ed.refreshInput();
             break;
         case "ArrowRight":
             if (ed.remaining == "" && ed.currentRow != ed.rows.length) {
@@ -106,7 +102,6 @@ function checkForDown(event)
                 ed.remaining = decoy;
                 ed.currentRowNode.update(false);
             }
-            ed.refreshInput();
             break;
         case "ArrowUp":
             if(ed.currentRow != 1) {
@@ -127,7 +122,6 @@ function checkForDown(event)
                 ed.remaining = decoy2;
             }
             ed.currentRowNode.update(false);
-            ed.refreshInput();
             break;
         case "ArrowDown":
             if(ed.currentRow != ed.rows.length) {
@@ -148,7 +142,6 @@ function checkForDown(event)
                 ed.remaining = decoy2;
             }
             ed.currentRowNode.update(false);
-            ed.refreshInput();
             break;
         default:
             if(event.ctrlKey && event.shiftKey) {
@@ -164,5 +157,6 @@ function checkForDown(event)
             }
     }
     ed.input.value = "";
+    ed.refreshInput();
     updatePointerPosition();
 }
