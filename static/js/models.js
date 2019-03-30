@@ -21,7 +21,6 @@ class editor {
 
         this.currentRow++;
         if (this.currentRow != 1) { 
-            this.currentRowNode.update(false); // this is needed because remaining value is transfered to another line, will skip if its the first line
         }
     }
 
@@ -39,9 +38,7 @@ class editor {
     shiftRowsUp() {
         for (var i = this.currentRow; i < this.rows.length; i++) {
             this.rows[i].updateNode(i + 1);
-            this.rows[i].update();
         }
-        this.currentRowNode.update();
     }
 
     shiftRowsDown() {
@@ -50,7 +47,6 @@ class editor {
                 let newRow = new row(this.rows.length + 1, this);
                 this.rows.push(newRow);
                 ed.rows[i].content = ed.rows[i - 1].content;
-                ed.rows[i].update(false);
             }
             if (i > this.currentRow + 1) {  // skips at first row creation
                 ed.rows[i - 1].content = ed.rows[i - 2].content;
@@ -58,8 +54,13 @@ class editor {
             if (i == this.currentRow + 1) {
                 ed.rows[i - 1].content = "";
             }
-            ed.rows[i - 1].update(false);
         }
+    }
+
+    updateAll() {
+        this.rows.forEach(row => {
+            row.update(false);
+        });
     }
 
     focusInput() {

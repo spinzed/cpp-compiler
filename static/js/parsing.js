@@ -9,9 +9,12 @@ function getType(variable)
         case "if":
         case "for":
         case "while":
+        case "do":
+        case "void":
         case "using":
         case "namespace":
         case "#include":
+        
             return "keyword";
         case "0":
         case "1":
@@ -75,7 +78,7 @@ function parseToArray(string)
     let arr = [string];
     let result = [];
     let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">"];
-    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char"];
+    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char", "do", "void", "if", "for", "do", "while", "var"];
     let special = ["\"", "'"];
     let finalcheck = [];
     for(var i = 0; i < 10; i++) {
@@ -161,17 +164,4 @@ function parseToArray(string)
         resultArray.pop();
         return resultArray;
     }
-}
-
-function updatePointerPosition() {
-    ed.input.style.left = (10 + (8.8 * ed.currentRowValue.length)) + "px";
-    ed.input.style.top = ((ed.currentRow - 1) * 20) + "px";
-}
-
-function focusRow() {
-    ed.currentRowNode.update(false);
-    ed.remaining = "";
-    let id = this.id.split("row")[1];        
-    ed.currentRow = id;
-    updatePointerPosition();
 }
