@@ -1,12 +1,12 @@
 class row {
-    constructor(id, editor) {
+    constructor(editor, id) {
+        this.editor = editor;
         this.id = id;
         this.words = 0;
         this.content = "";
         this.node = document.createElement("div");
         this.node.id = "row" + this.id;
         this.node.classList.add("rows");
-        this.editor = editor;
         this.editor.rowNode.appendChild(this.node);
         this.node.setAttribute("onclick", "focusRow.call(this)")
     }
@@ -92,5 +92,29 @@ class word {
     }
     get hash() {
         return row + "_" + id;
+    }
+}
+
+class lcounter {
+    constructor(editor, id) {
+        this.node = document.getElementById(id);
+        this.editor = editor;
+        this.rows = 0;
+    }
+
+    update() {
+        let numOfRows = this.editor.rows.length;
+        while(this.rows > numOfRows) {
+            this.node.removeChild(this.node.lastChild);
+            this.rows--;
+        }
+        while(this.rows < numOfRows) {
+            let newr = document.createElement("div");
+            newr.classList.add("rows");
+            newr.classList.add("counter");
+            newr.innerHTML = this.editor.currentRow;
+            this.node.appendChild(newr);
+            this.rows++;
+        }
     }
 }

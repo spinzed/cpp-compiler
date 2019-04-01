@@ -5,10 +5,12 @@ class editor {
         this.input = document.getElementById("input");
         this.rowNode = document.getElementById("rows");
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
+        this.counter = new lcounter(this, "rowline");
         this.currentRow = 0; // id of the active row
         this.currentWord = 0; // id of the active word in a row
         this.remaining = "";
         this.makeNewRow();
+        this.counter.update();
     }
 
     checkForDown(event) {
@@ -158,6 +160,7 @@ class editor {
         this.input.value = "";
         this.refreshInput();
         this.updateAll();
+        this.counter.update();
         updatePointerPosition();
     }
 
@@ -165,7 +168,7 @@ class editor {
         this.shiftRowsDown(); // this will take care of everything if the row isnt the last one
 
         if (this.rows.length == this.currentRow) { // it will do this is this is the last row
-            let newRow = new row(this.currentRow + 1, this);
+            let newRow = new row(this, this.currentRow + 1);
             this.rows.push(newRow);
         }
 
@@ -194,7 +197,7 @@ class editor {
     shiftRowsDown() {
         for (var i = this.rows.length; i > this.currentRow; i--) { // will not go through if currentrow = rows.length
             if (i == this.rows.length) {
-                let newRow = new row(this.rows.length + 1, this);
+                let newRow = new row(this, this.rows.length + 1);
                 this.rows.push(newRow);
                 this.rows[i].content = this.rows[i - 1].content;
             }
