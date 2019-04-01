@@ -112,7 +112,7 @@ class lcounter {
             let newr = document.createElement("div");
             newr.classList.add("rows");
             newr.classList.add("counter");
-            newr.innerHTML = this.editor.currentRow;
+            newr.innerHTML = this.rows + 1;
             this.node.appendChild(newr);
             this.rows++;
         }
