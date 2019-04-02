@@ -1,20 +1,20 @@
-function getType(variable)
+function getType(variable)     // simplify this?
 {
     switch (variable)
     {
+        case "void":
         case "var":
         case "int":
+        case "char":
         case "bool":
-        case "string":
         case "if":
         case "for":
         case "while":
         case "do":
-        case "void":
         case "using":
         case "namespace":
         case "#include":
-        
+        case "float":
             return "keyword";
         case "0":
         case "1":
@@ -73,29 +73,28 @@ function replaceAll(string, oldValue, newValue)
     return result;
 }
 
-function parseToArray(string)
-{
+function parseToArray(string) {
     let arr = [string];
     let result = [];
     let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">"];
-    let keywords = ["#include", "using", "namespace", "int", "bool", "string", "char", "do", "void", "if", "for", "do", "while", "var"];
+    let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "do", "void", "if", "for", "do", "while", "var"];
     let special = ["\"", "'"];
     let finalcheck = [];
-    for(var i = 0; i < 10; i++) {
+    for(var i = 0; i < 10; i++) { // digits
         finalcheck.push(String(i));
     }
     finalcheck = finalcheck.concat(signs).concat(keywords).concat(special)
     finalcheck.forEach(sign => { // every sign
         for(var j = 0; j < arr.length; j++) { // every word
             let word = arr[j];
-            switchBreak: {
+            switchBreak: {      // js is bullshit
                 switch(sign) {
                     case "#":
                         if(word[0] == sign) {
                             result.push(word);
                             break switchBreak;
                         }
-                        result = defaultParse(word, sign, result);
+                        result = defaultParse(word, sign, result);  //will ship this for per ex #include
                         break switchBreak;
                     case "@":
                         if(word[0] == sign) {
@@ -107,7 +106,7 @@ function parseToArray(string)
                     case "<":
                         result = defaultParse(word, sign, result);
                         break switchBreak;
-                    case ">":
+                    case ">":    // simplify using arrows?
                         result = defaultParse(word, sign, result);
                         for(var k = 0; k < result.length; k++) { // first "
                             if(result[k] == "<") {
@@ -123,7 +122,7 @@ function parseToArray(string)
                         }
                         break switchBreak;
                     case "\"":
-                    case "\'":
+                    case "\'":    // simplify? ( and fix preferably)
                         result = defaultParse(word, sign, result);
                         for(var k = 0; k < result.length; k++) { // first "
                             if(result[k] == sign) {
@@ -156,7 +155,7 @@ function parseToArray(string)
     result = arr;
     return result;
 
-    function defaultParse(word, sign, resultArray) {
+    function defaultParse(word, sign, resultArray) { // just isolates the sign
         let tempArr = word.split(sign);
         tempArr.forEach(j => {
             resultArray.push(j, sign);

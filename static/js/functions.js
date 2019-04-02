@@ -10,3 +10,5 @@ function focusRow() {
     ed.currentRow = id;
     updatePointerPosition();
 }
+
+// todo: move this leftover pile of uselessness to classes

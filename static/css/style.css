@@ -35,8 +35,9 @@ header {
 }
 
 #editor {
-    flex: 1;
     display: flex;
+    overflow: auto;
+    flex: 1;
 }
 #rowline {
     top: 0px;
@@ -106,5 +107,5 @@ header {
     color: #c84db4;
 }
 .string {
-    color: #4ed677;
+    color: #69c544;
 }
