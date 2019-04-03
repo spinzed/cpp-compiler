@@ -4,7 +4,7 @@ function updatePointerPosition() {
 }
 
 function focusRow() {
-    ed.currentRowNode.update(false);
+    ed.currentRowNode.content += ed.remaining;
     ed.remaining = "";
     let id = this.id.split("row")[1];
     ed.currentRow = id;

@@ -33,6 +33,8 @@ function getType(variable)     // simplify this?
         case "=":
         case "<":
         case ">":
+        case "!":
+        case "?":
             return "sign";
         default:
             if(variable[0]=="\"" && variable[variable.length - 1]=="\"") {
@@ -76,7 +78,7 @@ function replaceAll(string, oldValue, newValue)
 function parseToArray(string) {
     let arr = [string];
     let result = [];
-    let signs = ["(", ")", ";", "=", "#", "@", "|", ":", "&", "<", ">"];
+    let signs = ["(", ")", ";", "=", "#", "@", "!", "?", "|", ":", "&", "<", ">"];
     let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "do", "void", "if", "for", "do", "while", "var"];
     let special = ["\"", "'"];
     let finalcheck = [];

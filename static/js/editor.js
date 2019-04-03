@@ -8,6 +8,7 @@ class editor {
         this.counter = new lcounter(this, "rowline");
         this.currentRow = 0; // id of the active row
         this.currentWord = 0; // id of the active word in a row
+        this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
         this.remaining = "";
         this.makeNewRow();
         this.counter.update();
@@ -31,6 +32,7 @@ class editor {
                 for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
                     this.currentRowValue += "    "; // inserts tab for every tab in row before
                 }
+                this.updateApparentLetter();
                 break;
             case "Backspace":
                 event.preventDefault();
@@ -46,6 +48,7 @@ class editor {
                     }
                     this.currentRowValue = decoy;
                 }
+                this.updateApparentLetter();
                 break;
             case "Delete":
                 event.preventDefault();
@@ -58,10 +61,12 @@ class editor {
                     }
                     this.remaining = decoy;
                 }
+                this.updateApparentLetter();
                 break;
             case "Tab":
                 event.preventDefault();
                 this.currentRowValue += "    ";
+                this.updateApparentLetter();
                 break;
             case "ArrowLeft":
                 if (this.currentRowValue == "" && this.currentRow != 1) {
@@ -86,6 +91,7 @@ class editor {
                     this.currentRowValue = decoy1;
                     this.remaining = decoy2;
                 }
+                this.updateApparentLetter();
                 break;
             case "ArrowRight":
                 if (this.remaining == "" && this.currentRow != this.rows.length) {
@@ -106,16 +112,17 @@ class editor {
                     }
                     this.remaining = decoy;
                 }
+                this.updateApparentLetter();
                 break;
             case "ArrowUp":
                 if (this.currentRow != 1) {
-                    let len = this.currentRowValue.length;
+                    // let len = this.currentRowValue.length;
                     this.currentRowValue = this.currentRowValue + this.remaining;
                     this.currentRow--;
                     let decoy1 = "";
                     let decoy2 = "";
                     for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i < len) {
+                        if (i < this.apparentLetter) {
                             decoy1 += this.currentRowValue[i];
                         }
                         else {
@@ -128,13 +135,13 @@ class editor {
                 break;
             case "ArrowDown":
                 if (this.currentRow != this.rows.length) {
-                    let len = this.currentRowValue.length;
+                    // let len = this.currentRowValue.length;
                     this.currentRowValue = this.currentRowValue + this.remaining;
                     this.currentRow++;
                     let decoy1 = "";
                     let decoy2 = "";
                     for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i < len) {
+                        if (i < this.apparentLetter) {
                             decoy1 += this.currentRowValue[i];
                         }
                         else {
@@ -146,18 +153,22 @@ class editor {
                 }
                 break;
             default:
-                if (event.ctrlKey && event.shiftKey) {
-                    // do nothing for now
+                if (event.ctrlKey && event.shiftKey) { // gotta make this more proffesional
+                    
                 }
                 else if (event.altKey) {
 
                 }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
-                    event.preventDefault();
+                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
+                    this.updateApparentLetter();
+                    event.preventDefault();
+                }
+                else {
+                    this.updateApparentLetter();
+                    event.preventDefault();
                 }
         }
-        this.input.value = "";
         this.refreshInput();
         this.updateAll();
         this.counter.update();
@@ -208,6 +219,10 @@ class editor {
                 this.rows[i - 1].content = "";
             }
         }
+    }
+
+    updateApparentLetter() {
+        this.apparentLetter = this.currentRowNode.content.length;
     }
 
     updateAll() {
