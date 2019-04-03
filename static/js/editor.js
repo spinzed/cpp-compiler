@@ -184,8 +184,6 @@ class editor {
         }
 
         this.currentRow++;
-        if (this.currentRow != 1) { 
-        }
     }
 
     deleteLine(targetedRow = this.currentRow) {
