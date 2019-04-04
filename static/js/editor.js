@@ -235,7 +235,7 @@ class editor {
             for (let i = 0; i < rwdiv.children.length; i++) {
                 inner += rwdiv.children[i].innerHTML;
             }
-            if (row = this.currentRowNode) {
+            if (row == this.currentRowNode) {
                 inner += this.remaining;
             }
             if(parseToHTML(row.content) != inner) {
