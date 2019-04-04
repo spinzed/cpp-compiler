@@ -230,7 +230,14 @@ class editor {
 
     updateAll() {
         this.rows.forEach(row => {
-            row.update(false);
+            let inner = "";
+            let rwdiv = document.getElementById("row" + row.id)
+            for(let i = 0; i < rwdiv.children.length; i++) {
+                inner += rwdiv.children[i].innerHTML;
+            }
+            if(parseToHTML(row.content) != inner) {
+                row.update(false);
+            }
         });
     }
 
