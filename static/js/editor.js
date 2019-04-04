@@ -232,8 +232,11 @@ class editor {
         this.rows.forEach(row => {
             let inner = "";
             let rwdiv = document.getElementById("row" + row.id)
-            for(let i = 0; i < rwdiv.children.length; i++) {
+            for (let i = 0; i < rwdiv.children.length; i++) {
                 inner += rwdiv.children[i].innerHTML;
+            }
+            if (row = this.currentRowNode) {
+                inner += this.remaining;
             }
             if(parseToHTML(row.content) != inner) {
                 row.update(false);
