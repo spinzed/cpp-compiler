@@ -61,6 +61,11 @@ class editor {
                     }
                     this.remaining = decoy;
                 }
+                else if (this.rows.length != this.currentRow) {
+                    this.remaining = this.rows[ed.currentRow].content;
+                    ed.currentRow++;
+                    this.deleteLine();
+                }
                 this.updateApparentLetter();
                 break;
             case "Tab":
