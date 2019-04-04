@@ -10,7 +10,7 @@ class editor {
         this.currentWord = 0; // id of the active word in a row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
         this.remaining = "";
-        this.makeNewRow();
+        this.makeNewRow(); // init first row
         this.counter.update();
     }
 
@@ -19,16 +19,19 @@ class editor {
             case "Enter":
                 event.preventDefault();
                 this.makeNewRow();
-                let previousRowContent = this.rows[this.currentRow - 2].content;
-                if (previousRowContent[previousRowContent.length - 1] == "{") {
+                let lastLetterInPrevRow = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
+                let pair = "";
+                lastLetterInPrevRow == "(" ? pair = ")" : lastLetterInPrevRow == "[" ? pair = "]" : lastLetterInPrevRow == "{" ? pair = "}" : pair = "other";
+                if (ed.remaining == pair && pair != "other") {
                     this.currentRowValue += "    ";
                     this.makeNewRow();
                     for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
                         this.currentRowValue += "    "; // inserts tab for every tab in row before
                     }
-                    this.currentRowValue += "}";
+                    this.currentRowValue += pair;
+                    this.remaining = "";
                     this.currentRow--;
-                } // buggy, gotta fix
+                }
                 for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
                     this.currentRowValue += "    "; // inserts tab for every tab in row before
                 }
@@ -73,14 +76,25 @@ class editor {
                 this.currentRowValue += "    ";
                 this.updateApparentLetter();
                 break;
+            case "(":
+            case "[":
+            case "{":
+                event.preventDefault();
+                let decoy = this.remaining;
+                this.currentRowValue += event.key;
+                let other = "";
+                event.key == "(" ? other = ")" : event.key == "[" ? other = "]" : other = "}";
+                this.remaining = other + decoy;
+                this.updateApparentLetter();
+                break;
             case "ArrowLeft":
-                if (this.currentRowValue == "" && this.currentRow != 1) {
+                if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
                     this.currentRowValue = this.remaining;
                     this.remaining = "";
                     this.currentRow--;
                     this.currentWord = this.currentRowNode.words;
                 }
-                else if (this.currentRowValue != "") {
+                else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
                     let decoy1 = "";
                     let decoy2 = "";
                     for (var i = 0; i < this.currentRowValue.length; i++) {
@@ -164,7 +178,7 @@ class editor {
                 else if (event.altKey) {
 
                 }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?(){}[]<>|\"\'".includes(event.key.toLowerCase())) {
+                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?}()[]<>|\"\'".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
                     this.updateApparentLetter();
                     event.preventDefault();
