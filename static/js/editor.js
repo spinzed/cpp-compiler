@@ -1,11 +1,13 @@
 class editor {
     constructor(id) {
-        this.rows = [];
+        this.id = id;
         this.node = document.getElementById(id);
+        this.core = document.getElementById("editor_core");
         this.input = document.getElementById("input");
         this.rowNode = document.getElementById("rows");
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
         this.counter = new lcounter(this, "rowline");
+        this.rows = [];
         this.currentRow = 0; // id of the active row
         this.currentWord = 0; // id of the active word in a row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
@@ -178,7 +180,7 @@ class editor {
                 else if (event.altKey) {
 
                 }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?}()[]<>|\"\'".includes(event.key.toLowerCase())) {
+                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?}<>|\"\'".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
                     this.updateApparentLetter();
                     event.preventDefault();
@@ -192,6 +194,7 @@ class editor {
         this.updateAll();
         this.counter.update();
         updatePointerPosition();
+        this.updateCore();
     }
 
     makeNewRow() {
@@ -238,8 +241,18 @@ class editor {
         }
     }
 
-    updateApparentLetter() {
+    updateApparentLetter() { // this is used for going up and down rows using arrow keys
         this.apparentLetter = this.currentRowNode.content.length;
+    }
+
+    updateCore() { // note: small visual bug still present
+        let inner = document.getElementById("editor_inner");
+        if (this.rows.length * 20 >= $(document.getElementById("editor")).height()) {
+            inner.style.height = (20 * this.rows.length) + "px";
+        }
+        else {
+            inner.style.height = "";
+        }
     }
 
     updateAll() {
@@ -263,8 +276,8 @@ class editor {
     }
 
     refreshInput() {
-        this.node.removeChild(this.input);
-        this.node.appendChild(this.input);
+        this.core.removeChild(this.input);
+        this.core.appendChild(this.input);
         this.input.focus();
     }
     

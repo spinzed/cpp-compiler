@@ -1,1 +1,1 @@
-const ed = new editor("editor_core");
+const ed = new editor("editor");
