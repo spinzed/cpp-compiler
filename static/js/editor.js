@@ -193,7 +193,7 @@ class editor {
         this.refreshInput();
         this.updateAll();
         this.counter.update();
-        updatePointerPosition();
+        this.updatePointerPosition();
         this.updateCore();
     }
 
@@ -269,6 +269,19 @@ class editor {
                 row.update(false);
             }
         });
+    }
+
+    focusRow() {
+        this.currentRowNode.content += this.remaining;
+        this.remaining = "";
+        let id = this.id.split("row")[1];
+        this.currentRow = parseInt(id);
+        this.updatePointerPosition();
+    }
+
+    updatePointerPosition() {
+    this.input.style.left = (10 + (8.8 * this.currentRowValue.length)) + "px";
+    this.input.style.top = ((this.currentRow - 1) * 20) + "px";
     }
 
     focusInput() {
