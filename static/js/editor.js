@@ -1,4 +1,4 @@
-class editor {
+class Editor {
     constructor(id) {
         this.id = id;
         this.node = document.getElementById(id);
@@ -6,7 +6,7 @@ class editor {
         this.input = document.getElementById("input");
         this.rowNode = document.getElementById("rows");
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
-        this.counter = new lcounter(this, "rowline");
+        this.counter = new LCounter(this, "rowline");
         this.rows = [];
         this.currentRow = 0; // id of the active row
         this.currentWord = 0; // id of the active word in a row
@@ -97,20 +97,7 @@ class editor {
                     this.currentWord = this.currentRowNode.words;
                 }
                 else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
-                    let decoy1 = "";
-                    let decoy2 = "";
-                    for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i != this.currentRowValue.length - 1) {
-                            decoy1 += this.currentRowValue[i];
-                        }
-                        else {
-                            decoy2 += this.currentRowValue[i];
-                        }
-                    }
-                    decoy2 +=
-                        this.remaining;
-                    this.currentRowValue = decoy1;
-                    this.remaining = decoy2;
+                    this.currentRowNode.splitContent(this.currentRowValue.length - 1);
                 }
                 this.updateApparentLetter();
                 break;
@@ -122,60 +109,35 @@ class editor {
                     this.currentWord = 0;
                 }
                 else {
-                    let decoy = "";
-                    for (var i = 0; i < this.remaining.length; i++) {
-                        if (i != 0) {
-                            decoy += this.remaining[i];
-                        }
-                        else {
-                            this.currentRowValue += this.remaining[i];
-                        }
-                    }
-                    this.remaining = decoy;
+                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
                 }
                 this.updateApparentLetter();
                 break;
             case "ArrowUp":
                 if (this.currentRow != 1) {
-                    // let len = this.currentRowValue.length;
-                    this.currentRowValue = this.currentRowValue + this.remaining;
+                    this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+                    this.remaining = "";
                     this.currentRow--;
-                    let decoy1 = "";
-                    let decoy2 = "";
-                    for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i < this.apparentLetter) {
-                            decoy1 += this.currentRowValue[i];
-                        }
-                        else {
-                            decoy2 += this.currentRowValue[i];
-                        }
-                    }
-                    this.currentRowValue = decoy1;
-                    this.remaining = decoy2;
+                    this.currentRowNode.splitContent(this.apparentLetter);
                 }
                 break;
             case "ArrowDown":
                 if (this.currentRow != this.rows.length) {
-                    // let len = this.currentRowValue.length;
-                    this.currentRowValue = this.currentRowValue + this.remaining;
+                    this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+                    this.remaining = "";
                     this.currentRow++;
-                    let decoy1 = "";
-                    let decoy2 = "";
-                    for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i < this.apparentLetter) {
-                            decoy1 += this.currentRowValue[i];
-                        }
-                        else {
-                            decoy2 += this.currentRowValue[i];
-                        }
-                    }
-                    this.currentRowValue = decoy1;
-                    this.remaining = decoy2;
+                    this.currentRowNode.splitContent(this.apparentLetter);
                 }
                 break;
             default:
                 if (event.ctrlKey && event.shiftKey) { // gotta make this more proffesional
-                    
+                    switch(event.key) {
+                        case "K":
+                            this.deleteLine()
+                            this.remaining = "";
+                            this.updateApparentLetter();
+                            event.preventDefault();
+                    }
                 }
                 else if (event.altKey) {
 
@@ -201,7 +163,7 @@ class editor {
         this.shiftRowsDown(); // this will take care of everything if the row isnt the last one
 
         if (this.rows.length == this.currentRow) { // it will do this is this is the last row
-            let newRow = new row(this, this.currentRow + 1);
+            let newRow = new Row(this, this.currentRow + 1);
             this.rows.push(newRow);
         }
 
@@ -228,7 +190,7 @@ class editor {
     shiftRowsDown() {
         for (var i = this.rows.length; i > this.currentRow; i--) { // will not go through if currentrow = rows.length
             if (i == this.rows.length) {
-                let newRow = new row(this, this.rows.length + 1);
+                let newRow = new Row(this, this.rows.length + 1);
                 this.rows.push(newRow);
                 this.rows[i].content = this.rows[i - 1].content;
             }
@@ -280,8 +242,8 @@ class editor {
     }
 
     updatePointerPosition() {
-    this.input.style.left = (10 + (8.8 * this.currentRowValue.length)) + "px";
-    this.input.style.top = ((this.currentRow - 1) * 20) + "px";
+        this.input.style.left = (10 + (8.8 * this.currentRowValue.length)) + "px";
+        this.input.style.top = ((this.currentRow - 1) * 20) + "px";
     }
 
     focusInput() {

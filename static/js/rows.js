@@ -1,4 +1,4 @@
-class row {
+class Row {
     constructor(editor, id) {
         this.editor = editor;
         this.id = id;
@@ -8,7 +8,7 @@ class row {
         this.node.id = "row" + this.id;
         this.node.classList.add("rows");
         this.editor.rowNode.appendChild(this.node);
-        this.node.setAttribute("onclick", "focusRow.call(this)")
+        this.node.setAttribute("onclick", "ed.focusRow.call(this)")
     }
 
     update(space, forceRemaining = false) { // Parses input field and puts its content into spans
@@ -43,7 +43,6 @@ class row {
     }
 
     makeSpan(content, space) {
-        // console.log(content)
         let parsedContent = parseToHTML(content);
         let span = document.createElement("span");
         if (space) {
@@ -55,14 +54,21 @@ class row {
         span.classList.add("textspan");
         span.classList.add(getType(content));
         span.id = this.id + "_" + (this.words + 1);
-        // for (var i = this.words; i > parseToArray(this.content).length; i--) {
-        //     let elem1 = document.getElementById(this.id + "_" + i);
-        //     elem1.id = this.id + "_" + (i + 1);
-        // }
-
         let rowdiv = document.getElementById("row" + this.id);
         rowdiv.appendChild(span);
         this.words++;
+    }
+
+    splitContent(index, includeRemaining = true) {
+        let content = "";
+        includeRemaining ? content = this.content + this.editor.remaining : content = this.content;
+        let decoy1 = "";
+        let decoy2 = "";
+        for (var i = 0; i < content.length; i++) {
+            i < index ? decoy1 += content[i] : decoy2 += content[i];
+        }
+        this.content = decoy1;
+        this.editor.remaining = decoy2;
     }
 
     countTabs() {
@@ -81,7 +87,7 @@ class row {
     }
 }
 
-class word {
+class Word {
     constructor(content, row, id) {
         this.row = row;
         this.id = id;
@@ -95,7 +101,7 @@ class word {
     }
 }
 
-class lcounter {
+class LCounter {
     constructor(editor, id) {
         this.node = document.getElementById(id);
         this.editor = editor;
