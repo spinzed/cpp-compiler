@@ -33,7 +33,6 @@ header {
     text-align: center;
     display: flex;
 }
-
 #editor {
     display: flex;
     flex: 1;
@@ -49,6 +48,19 @@ header {
     height: 100%;
     display: flex;
     overflow: auto;
+}
+::-webkit-scrollbar {
+    width: 12px;
+}
+::-webkit-scrollbar-track {
+    background-color: #353535;
+}
+::-webkit-scrollbar-thumb {
+    background-clip: content-box;
+    background-color: #505050;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #646464;
 }
 #editor_inner {
     width: 100%;

@@ -140,7 +140,7 @@ class Editor {
         this.updateAll();
         this.counter.update();
         this.updatePointerPosition();
-        this.updateCore();
+        this.updateCore(); // updates rows of editor to correctly render on screen
     }
 
     makeNewRow() {
@@ -204,8 +204,9 @@ class Editor {
 
     updateCore() { // note: small visual bug still present
         let inner = document.getElementById("editor_inner");
-        if (this.rows.length * 20 >= $(document.getElementById("editor")).height()) {
-            inner.style.height = (20 * this.rows.length) + "px";
+        let height = $(this.node).height()
+        if (this.rows.length * 20 + height - 20 >= height) {
+            inner.style.height = (this.rows.length * 20 + height - 20) + "px";
         }
         else {
             inner.style.height = "";
