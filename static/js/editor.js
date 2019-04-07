@@ -9,7 +9,6 @@ class Editor {
         this.counter = new LCounter(this, "rowline");
         this.rows = [];
         this.currentRow = 0; // id of the active row
-        this.currentWord = 0; // id of the active word in a row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
         this.remaining = "";
         this.makeNewRow(); // init first row
@@ -17,9 +16,10 @@ class Editor {
     }
 
     checkForDown(event) {
+        let updateApparent = true;
+        let prevent = true;
         switch (event.key) {
             case "Enter":
-                event.preventDefault();
                 this.makeNewRow();
                 let lastLetterInPrevRow = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
                 let pair = "";
@@ -37,10 +37,8 @@ class Editor {
                 for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
                     this.currentRowValue += "    "; // inserts tab for every tab in row before
                 }
-                this.updateApparentLetter();
                 break;
             case "Backspace":
-                event.preventDefault();
                 if (this.currentRowValue == "" && this.currentRow != 1) {
                     this.deleteLine();
                 }
@@ -53,10 +51,8 @@ class Editor {
                     }
                     this.currentRowValue = decoy;
                 }
-                this.updateApparentLetter();
                 break;
             case "Delete":
-                event.preventDefault();
                 if (this.remaining != "") {
                     let decoy = "";
                     for (var i = 0; i < this.remaining.length; i++) {
@@ -71,63 +67,52 @@ class Editor {
                     ed.currentRow++;
                     this.deleteLine();
                 }
-                this.updateApparentLetter();
                 break;
             case "Tab":
-                event.preventDefault();
                 this.currentRowValue += "    ";
-                this.updateApparentLetter();
                 break;
             case "(":
             case "[":
             case "{":
-                event.preventDefault();
                 let decoy = this.remaining;
                 this.currentRowValue += event.key;
                 let other = "";
                 event.key == "(" ? other = ")" : event.key == "[" ? other = "]" : other = "}";
                 this.remaining = other + decoy;
-                this.updateApparentLetter();
                 break;
             case "ArrowLeft":
                 if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
                     this.currentRowValue = this.remaining;
                     this.remaining = "";
                     this.currentRow--;
-                    this.currentWord = this.currentRowNode.words;
                 }
                 else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
                     this.currentRowNode.splitContent(this.currentRowValue.length - 1);
                 }
-                this.updateApparentLetter();
                 break;
             case "ArrowRight":
                 if (this.remaining == "" && this.currentRow != this.rows.length) {
                     this.currentRow++;
                     this.remaining = this.currentRowValue;
                     this.currentRowValue = "";
-                    this.currentWord = 0;
                 }
                 else {
                     this.currentRowNode.splitContent(this.currentRowValue.length + 1);
                 }
-                this.updateApparentLetter();
                 break;
             case "ArrowUp":
                 if (this.currentRow != 1) {
-                    this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
-                    this.remaining = "";
-                    this.currentRow--;
+                    this.previousRow();
                     this.currentRowNode.splitContent(this.apparentLetter);
                 }
+                updateApparent = false;
                 break;
             case "ArrowDown":
                 if (this.currentRow != this.rows.length) {
-                    this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
-                    this.remaining = "";
-                    this.currentRow++;
+                    this.nextRow();
                     this.currentRowNode.splitContent(this.apparentLetter);
                 }
+                updateApparent = false;
                 break;
             default:
                 if (event.ctrlKey && event.shiftKey) { // gotta make this more proffesional
@@ -135,23 +120,22 @@ class Editor {
                         case "K":
                             this.deleteLine()
                             this.remaining = "";
-                            this.updateApparentLetter();
-                            event.preventDefault();
+                            break;
+                        default:
+                            prevent = false;
                     }
                 }
                 else if (event.altKey) {
-
+                    prevent = false;
                 }
                 else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?}<>|\"\'".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
-                    this.updateApparentLetter();
-                    event.preventDefault();
                 }
                 else {
-                    this.updateApparentLetter();
-                    event.preventDefault();
                 }
         }
+        updateApparent ? this.updateApparentLetter() : null;
+        prevent ? event.preventDefault() : null;
         this.refreshInput();
         this.updateAll();
         this.counter.update();
@@ -177,7 +161,6 @@ class Editor {
         this.rows.splice(targetedRow - 1, 1)
 
         this.currentRow--;
-        this.currentWord = this.currentRowNode.words;
         this.shiftRowsUp();
     }
 
@@ -201,6 +184,18 @@ class Editor {
                 this.rows[i - 1].content = "";
             }
         }
+    }
+
+    nextRow() {
+        this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+        this.remaining = "";
+        this.currentRow++;
+    }
+
+    previousRow() {
+        this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+        this.remaining = "";
+        this.currentRow--;
     }
 
     updateApparentLetter() { // this is used for going up and down rows using arrow keys

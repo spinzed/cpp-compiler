@@ -24,7 +24,6 @@ class Row {
         }
         this.editor.rows[this.id - 1].words = 0;
         this.editor.column = 1;
-        this.editor.currentWord = 1;
         let elements = parseToArray(value);
         for (var i = 0; i < elements.length; i++) {
             if (i == elements.length - 1) {
