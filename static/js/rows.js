@@ -8,7 +8,6 @@ class Row {
         this.node.id = "row" + this.id;
         this.node.classList.add("rows");
         this.editor.rowNode.appendChild(this.node);
-        this.node.setAttribute("onclick", "ed.focusRow.call(this)")
     }
 
     update(space, forceRemaining = false) { // Parses input field and puts its content into spans
@@ -70,6 +69,17 @@ class Row {
         this.editor.remaining = decoy2;
     }
 
+    focus(letter) {
+        this.editor.currentRowValue += this.editor.remaining;
+        this.editor.remaining = "";
+        this.editor.currentRow = this.id;
+        let value = this.editor.currentRowValue;
+        let decoy = "";
+        for (let i = 0; i < value.length; i++) { i < letter ? decoy += value[i] : this.editor.remaining += value[i]; }
+        this.editor.currentRowValue = decoy;
+        this.editor.postInit();
+    }
+
     countTabs() {
         let content = this.content;
         let count = 0;
@@ -102,8 +112,8 @@ class Word {
 
 class LCounter {
     constructor(editor, id) {
-        this.node = document.getElementById(id);
         this.editor = editor;
+        this.node = document.getElementById(this.editor.id + "_" + id);
         this.rows = 0;
     }
 

@@ -2,11 +2,14 @@ class Editor {
     constructor(id) {
         this.id = id;
         this.node = document.getElementById(id);
-        this.core = document.getElementById("editor_core");
-        this.input = document.getElementById("input");
-        this.rowNode = document.getElementById("rows");
+        this.core = document.getElementById(this.id + "_core");
+        this.input = document.getElementById(this.id + "_input");
+        this.rowNode = document.getElementById(this.id + "_rows");
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
+        this.node.addEventListener("click", this.focusInput.bind(this))
         this.counter = new LCounter(this, "rowline");
+        $(window).resize(() => { this.updateCoreSize(); }); // updates the window on editor resize, gotta tweak it
+        $(this.core).on('click', this.clickRow.bind(this))
         this.rows = [];
         this.currentRow = 0; // id of the active row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
@@ -24,13 +27,13 @@ class Editor {
                 let lastLetterInPrevRow = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
                 let pair = "";
                 lastLetterInPrevRow == "(" ? pair = ")" : lastLetterInPrevRow == "[" ? pair = "]" : lastLetterInPrevRow == "{" ? pair = "}" : pair = "other";
-                if (ed.remaining == pair && pair != "other") {
+                if (this.remaining[0] == pair && pair != "other") {
                     this.currentRowValue += "    ";
                     this.makeNewRow();
                     for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
                         this.currentRowValue += "    "; // inserts tab for every tab in row before
                     }
-                    this.currentRowValue += pair;
+                    this.currentRowValue += this.remaining;
                     this.remaining = "";
                     this.currentRow--;
                 }
@@ -82,9 +85,7 @@ class Editor {
                 break;
             case "ArrowLeft":
                 if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
-                    this.currentRowValue = this.remaining;
-                    this.remaining = "";
-                    this.currentRow--;
+                    this.previousRow();
                 }
                 else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
                     this.currentRowNode.splitContent(this.currentRowValue.length - 1);
@@ -134,13 +135,8 @@ class Editor {
                 else {
                 }
         }
-        updateApparent ? this.updateApparentLetter() : null;
         prevent ? event.preventDefault() : null;
-        this.refreshInput();
-        this.updateAll();
-        this.counter.update();
-        this.updatePointerPosition();
-        this.updateCore(); // updates rows of editor to correctly render on screen
+        this.postInit(updateApparent); // refreshes the editor, must be run after every change in the editor
     }
 
     makeNewRow() {
@@ -156,7 +152,7 @@ class Editor {
 
     deleteLine(targetedRow = this.currentRow) {
         let targetedRowDiv = document.getElementById("row" + targetedRow);
-        rows.removeChild(targetedRowDiv);
+        this.rowNode.removeChild(targetedRowDiv);
 
         this.rows.splice(targetedRow - 1, 1)
 
@@ -186,14 +182,14 @@ class Editor {
         }
     }
 
-    nextRow() {
-        this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+    nextRow() { //updates row before switching, may need to rework it
+        this.currentRowValue = this.currentRowValue + this.remaining;
         this.remaining = "";
         this.currentRow++;
     }
 
-    previousRow() {
-        this.currentRowValue = this.currentRowValue + this.remaining; //updates row before switching
+    previousRow() {  //updates row before switching, may need to rework it
+        this.currentRowValue = this.currentRowValue + this.remaining;
         this.remaining = "";
         this.currentRow--;
     }
@@ -202,7 +198,19 @@ class Editor {
         this.apparentLetter = this.currentRowNode.content.length;
     }
 
-    updateCore() { // note: small visual bug still present
+    clickRow(event) {
+        let elm = $(this.core);
+        let xPos = event.pageX - elm.offset().left;
+        let yPos = event.pageY - elm.offset().top;
+        // ^^ gotta figure out how that works
+
+        if (this.rows.length * 20 > yPos) {
+            let row = this.rows[Math.floor(yPos / 20)];
+            row.focus(Math.round(xPos / 8.8) - 1);
+        }
+    }
+
+    updateCoreSize() { // note: small visual bug still present
         let inner = document.getElementById("editor_inner");
         let height = $(this.node).height()
         if (this.rows.length * 20 + height - 20 >= height) {
@@ -229,14 +237,6 @@ class Editor {
         });
     }
 
-    focusRow() {
-        this.currentRowNode.content += this.remaining;
-        this.remaining = "";
-        let id = this.id.split("row")[1];
-        this.currentRow = parseInt(id);
-        this.updatePointerPosition();
-    }
-
     updatePointerPosition() {
         this.input.style.left = (10 + (8.8 * this.currentRowValue.length)) + "px";
         this.input.style.top = ((this.currentRow - 1) * 20) + "px";
@@ -250,6 +250,15 @@ class Editor {
         this.core.removeChild(this.input);
         this.core.appendChild(this.input);
         this.input.focus();
+    }
+
+    postInit(updateApparent = true) { // must be run after every change in editor
+        updateApparent ? this.updateApparentLetter() : null;
+        this.refreshInput();
+        this.updateAll();
+        this.counter.update();
+        this.updatePointerPosition();
+        this.updateCoreSize(); // updates rows of editor to correctly render on screen
     }
     
     get currentRowValue() {

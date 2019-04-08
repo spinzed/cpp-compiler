@@ -37,7 +37,7 @@ header {
     display: flex;
     flex: 1;
 }
-#rowline {
+#editor_rowline {
     top: 0px;
     bottom: 0px;
     width: 80px;
@@ -76,7 +76,7 @@ header {
     font-size: 16px;
     background-color: #282c34;
 }
-#input {
+#editor_input {
     position: absolute;
     display: inline-block;
     vertical-align: top;
@@ -95,7 +95,7 @@ header {
     width: 1px;
     transition: all 0.02s linear;
 }
-#rows {
+#editor_rows {
     flex: 1;
 }
 .rows {
