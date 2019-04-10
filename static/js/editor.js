@@ -1,12 +1,11 @@
 class Editor {
     constructor(id) {
         this.id = id;
-        this.node = document.getElementById(id);
+        this.node = document.getElementById(this.id);
         this.core = document.getElementById(this.id + "_core");
         this.input = document.getElementById(this.id + "_input");
         this.rowNode = document.getElementById(this.id + "_rows");
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
-        this.node.addEventListener("click", this.focusInput.bind(this))
         this.counter = new LCounter(this, "rowline");
         $(window).resize(() => { this.updateCoreSize(); }); // updates the window on editor resize, gotta tweak it
         $(this.core).on('click', this.clickRow.bind(this))
@@ -14,6 +13,8 @@ class Editor {
         this.currentRow = 0; // id of the active row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
         this.remaining = "";
+
+        // VVV initialize editor for use
         this.makeNewRow(); // init first row
         this.counter.update();
     }
@@ -24,11 +25,10 @@ class Editor {
         switch (event.key) {
             case "Enter":
                 this.makeNewRow();
-                let lastLetterInPrevRow = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
+                let lastInPrev = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
                 let pair = "";
-                lastLetterInPrevRow == "(" ? pair = ")" : lastLetterInPrevRow == "[" ? pair = "]" : lastLetterInPrevRow == "{" ? pair = "}" : pair = "other";
-                if (this.remaining[0] == pair && pair != "other") {
-                    this.currentRowValue += "    ";
+                lastInPrev == "(" ? pair = ")" : lastInPrev == "[" ? pair = "]" : lastInPrev == "{" ? pair = "}" : pair = "other";
+                if (this.remaining[0] == pair && pair != "other") { // it will run if theres a backet pair in row before
                     this.makeNewRow();
                     for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
                         this.currentRowValue += "    "; // inserts tab for every tab in row before
@@ -37,9 +37,12 @@ class Editor {
                     this.remaining = "";
                     this.currentRow--;
                 }
+                // VVV add additional stuff to current row
                 for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
                     this.currentRowValue += "    "; // inserts tab for every tab in row before
                 }
+                "([{".includes(lastInPrev) ? this.currentRowValue += "    " : null;
+                //  ^^ will add a tab if theres bracet in row before, it will alwazs work
                 break;
             case "Backspace":
                 if (this.currentRowValue == "" && this.currentRow != 1) {
@@ -82,6 +85,16 @@ class Editor {
                 let other = "";
                 event.key == "(" ? other = ")" : event.key == "[" ? other = "]" : other = "}";
                 this.remaining = other + decoy;
+                break;
+            case ")":
+            case "]":
+            case "}":
+                if (this.remaining[0] == event.key) {
+                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
+                }
+                else {
+                    this.currentRowValue += event.key;
+                }
                 break;
             case "ArrowLeft":
                 if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
@@ -129,10 +142,8 @@ class Editor {
                 else if (event.altKey) {
                     prevent = false;
                 }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?}<>|\"\'".includes(event.key.toLowerCase())) {
+                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?<>|\"\'".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
-                }
-                else {
                 }
         }
         prevent ? event.preventDefault() : null;
@@ -204,10 +215,14 @@ class Editor {
         let yPos = event.pageY - elm.offset().top;
         // ^^ gotta figure out how that works
 
-        if (this.rows.length * 20 > yPos) {
+        if (yPos > this.rows.length * 20) {
+            this.rows[this.rows.length - 1].focus(this.rows[this.rows.length - 1].content.length);
+        }
+        else {
             let row = this.rows[Math.floor(yPos / 20)];
             row.focus(Math.round(xPos / 8.8) - 1);
         }
+        this.focusInput();
     }
 
     updateCoreSize() { // note: small visual bug still present
@@ -221,7 +236,7 @@ class Editor {
         }
     }
 
-    updateAll() {
+    updateAll() { // updates content in rows of the editor, without row counter => this.counter.update()
         this.rows.forEach(row => {
             let inner = "";
             let rwdiv = document.getElementById("row" + row.id)

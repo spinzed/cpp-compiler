@@ -57,7 +57,7 @@ class Row {
         this.words++;
     }
 
-    splitContent(index, includeRemaining = true) {
+    splitContent(index, includeRemaining = true) { // takes entire content from a row and splits it on the wanted index
         let content = "";
         includeRemaining ? content = this.content + this.editor.remaining : content = this.content;
         let decoy1 = "";
