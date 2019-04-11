@@ -96,6 +96,17 @@ class Editor {
                     this.currentRowValue += event.key;
                 }
                 break;
+            case "\"":
+            case "\'":
+                if (this.remaining[0] == event.key) {
+                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
+                }
+                else {
+                    event.key == "\"" ? this.currentRowValue += "\"\"" : this.currentRowValue += "\'\'";
+                    this.currentRowNode.update(); // gotta fix this, this.updateAll() doesnt update it for some reason
+                    this.currentRowNode.splitContent(this.currentRowValue.length - 1);
+                }
+                break;
             case "ArrowLeft":
                 if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
                     this.previousRow();
@@ -142,7 +153,7 @@ class Editor {
                 else if (event.altKey) {
                     prevent = false;
                 }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?<>|\"\'".includes(event.key.toLowerCase())) {
+                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?<>|".includes(event.key.toLowerCase())) {
                     this.currentRowValue += event.key;
                 }
         }

@@ -80,6 +80,11 @@ class Row {
         this.editor.postInit();
     }
 
+    countValues(value) { // counts appearences of one
+        let content = this.content;
+        return content.split(value).length - 1;
+    }
+
     countTabs() {
         let content = this.content;
         let count = 0;
