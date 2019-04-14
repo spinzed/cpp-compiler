@@ -103,7 +103,6 @@ class Editor {
                 }
                 else {
                     event.key == "\"" ? this.currentRowValue += "\"\"" : this.currentRowValue += "\'\'";
-                    this.currentRowNode.update(); // gotta fix this, this.updateAll() doesnt update it for some reason
                     this.currentRowNode.splitContent(this.currentRowValue.length - 1);
                 }
                 break;
@@ -250,14 +249,15 @@ class Editor {
     updateAll() { // updates content in rows of the editor, without row counter => this.counter.update()
         this.rows.forEach(row => {
             let inner = "";
+            let check = row.content;
             let rwdiv = document.getElementById("row" + row.id)
             for (let i = 0; i < rwdiv.children.length; i++) {
                 inner += rwdiv.children[i].innerHTML;
             }
             if (row == this.currentRowNode) {
-                inner += this.remaining;
+                check += this.remaining;
             }
-            if(parseToHTML(row.content) != inner) {
+            if(parseToHTML(check) != inner) {
                 row.update(false);
             }
         });

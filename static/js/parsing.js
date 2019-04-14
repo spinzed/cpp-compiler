@@ -77,92 +77,97 @@ function replaceAll(string, oldValue, newValue)
 
 function parseToArray(string) {
     let arr = [string];
-    let result = [];
-    let signs = ["(", ")", ";", "=", "#", "@", "!", "?", "|", ":", "&", "<", ">"];
-    let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "do", "void", "if", "for", "do", "while", "var"];
+    let digits = [];
+    for (let i = 0; i < 10; i++) { digits.push(String(i)); } // digits
+    let signs = ["(", ")", ";", "=", "@", "!", "?", "|", ":", "&", ">"];
+    let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "string", "do", "void", "if", "for", "do", "while", "var", "static", "inline"];
     let special = ["\"", "'"];
-    let finalcheck = [];
-    for(var i = 0; i < 10; i++) { // digits
-        finalcheck.push(String(i));
-    }
-    finalcheck = finalcheck.concat(signs).concat(keywords).concat(special)
-    finalcheck.forEach(sign => { // every sign
-        for(var j = 0; j < arr.length; j++) { // every word
-            let word = arr[j];
-            switchBreak: {      // js is bullshit
-                switch(sign) {
-                    case "#":
-                        if(word[0] == sign) {
-                            result.push(word);
-                            break switchBreak;
+    keywords.forEach(sign => {
+        arr = keywordParse(sign, arr);
+    });
+    signs.concat(digits).forEach(sign => {
+        arr = normalParse(sign, arr);
+    });
+    special.forEach(sign => {
+        arr = normalParse(sign, arr);
+        for (let i = 0; i < arr.length; i++) {
+            word = arr[i];
+            if (word == sign) {
+                if (i < arr.length) {
+                    while (i < arr.length - 1) {
+                        arr[i] += arr[i + 1];
+                        arr.splice(i + 1, 1);
+                        word = arr[i];
+                        if (word[word.length - 1] == sign) {
+                            break;
                         }
-                        result = defaultParse(word, sign, result);  //will ship this for per ex #include
-                        break switchBreak;
-                    case "@":
-                        if(word[0] == sign) {
-                            result.push(word);
-                            break switchBreak;
-                        }
-                        result = defaultParse(word, sign, result);
-                        break switchBreak;
-                    case "<":
-                        result = defaultParse(word, sign, result);
-                        break switchBreak;
-                    case ">":    // simplify using arrows?
-                        result = defaultParse(word, sign, result);
-                        for(var k = 0; k < result.length; k++) { // first "
-                            if(result[k] == "<") {
-                                for(var l = k + 1; l < result.length; l++) { // second "
-                                    if(result[l] == ">") {
-                                        for(var m = k; m < l; m++) {
-                                            result[k]+=result[k + 1];
-                                            result.splice(k + 1, 1);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break switchBreak;
-                    case "\"":
-                    case "\'":    // simplify? ( and fix preferably)
-                        result = defaultParse(word, sign, result);
-                        for(var k = 0; k < result.length; k++) { // first "
-                            if(result[k] == sign) {
-                                for(var l = k + 1; l < result.length; l++) { // second "
-                                    if(result[l] == sign) {
-                                        for(var m = k; m < l; m++) {
-                                            result[k]+=result[k + 1];
-                                            result.splice(k + 1, 1);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                        break switchBreak;
-                    default:
-                        result = defaultParse(word, sign, result);
-                        break switchBreak;
+                    }
                 }
             }
         }
-        // array
-        for(var j = 0; j < result.length; j++) {
-            if(result[j]=="") {
-                result.splice(j, 1)
+    });
+    if (arr.length > 1 && arr[0] == "#include") {
+        if (arr[1][1] == "<" || arr[1][1] == "\"") {
+            for (let i = 2; i < arr.length; i++) {
+                arr[1] += arr[i];
+            }
+            arr.splice(2, arr.length - 2);
+        }
+    }
+
+    return arr; // returns result
+
+    function normalParse(sign, arr) { // just casually splits the array by the given sign
+        let result = [];
+        arr.forEach(element => {
+            let decoyarr = element.split(sign);
+            decoyarr.forEach(elementinner => {
+                result.push(elementinner, sign);
+            });
+            result.pop();
+        });
+        result = clean(result);
+        return result;
+    }
+    function keywordParse(sign, resultArray) { // optimize myb?
+        decoyArray = normalParse(sign, resultArray);
+        let timer = 0;
+        decoyArray.forEach(y => {
+            if (y == sign) {
+                let letterOfPrev = "";
+                let letterOfNext = "";
+                timer != 0 ? letterOfPrev = decoyArray[timer - 1][decoyArray[timer - 1].length - 1] : null;
+                timer != decoyArray.length - 1 ? letterOfNext = decoyArray[timer + 1][0] : null;
+                if (decoyArray.length != 1) {
+                    if (timer == 0) {
+                        if (letterOfNext != " " && letterOfNext != "(") {
+                            decoyArray[timer] = sign + decoyArray[timer + 1];
+                            decoyArray.splice(timer + 1, 1);
+                        }
+                    }
+                    else if (timer == decoyArray.length - 1) {
+                        if (decoyArray.length - 1 && letterOfPrev != " ") {
+                            decoyArray[timer] = decoyArray[timer - 1] + sign;
+                            decoyArray.splice(timer - 1, 1);
+                        }
+                    }
+                    else if (letterOfPrev != " " || letterOfNext != " " && letterOfNext != "(") {
+                        decoyArray[timer] = decoyArray[timer - 1] + sign + decoyArray[timer + 1];
+                        decoyArray.splice(timer - 1, 1);
+                        decoyArray.splice(timer, 1);
+                    }
+                }
+            }
+            timer++;
+        });
+        return decoyArray;
+    }
+    function clean(array) {
+        for (var j = 0; j < array.length; j++) { // cleans the array of empty strings
+            if (array[j] == "") {
+                array.splice(j, 1)
             }
         }
-        arr = result;
-        result = [];
-    });
-    result = arr;
-    return result;
-
-    function defaultParse(word, sign, resultArray) { // just isolates the sign
-        let tempArr = word.split(sign);
-        tempArr.forEach(j => {
-            resultArray.push(j, sign);
-        });
-        resultArray.pop();
-        return resultArray;
+        return array;
     }
 }
