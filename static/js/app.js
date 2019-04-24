@@ -9,7 +9,7 @@ const ed = new Editor("editor");
 //     ├───div #EDTR-NAME_inner
 //     ├───div #EDTR-NAME_rowline
 //     └───div #EDTR-NAME_core
-//         ├───div #EDTR-NAME_editor_input
-//         └───div #EDTR-NAME_editor_rows
+//         ├───textarea #EDTR-NAME_input
+//         └───div #EDTR-NAME_rows
 // 
 // EDTR-NAME - ID of the core editor div
