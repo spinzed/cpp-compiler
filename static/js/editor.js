@@ -8,7 +8,7 @@ class Editor {
         this.input.addEventListener("keydown", this.checkForDown.bind(this));
         this.counter = new LCounter(this, "rowline");
         $(window).resize(() => { this.updateCoreSize(); }); // updates the window on editor resize, gotta tweak it
-        $(this.core).on('click', this.clickRow.bind(this))
+        $(this.core).on('mousedown', this.detectEvent.bind(this))
         this.rows = [];
         this.currentRow = 0; // id of the active row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
@@ -220,6 +220,8 @@ class Editor {
     }
 
     clickRow(event) {
+        console.log(event.type);
+        console.log(this)
         let elm = $(this.core);
         let xPos = event.pageX - elm.offset().left;
         let yPos = event.pageY - elm.offset().top;
@@ -233,6 +235,21 @@ class Editor {
             row.focus(Math.round(xPos / 8.8) - 1);
         }
         this.focusInput();
+    }
+
+    detectEvent(event) {
+        console.log(event.type);
+        console.log(this)
+        $(this.core).on('mouseup mousemove', (event) => {
+            console.log(event.type)
+            if (event.type == 'mouseup') {
+                console.log(this)
+                this.clickRow(event);
+            } else {
+                // drag
+            }
+            $(this.core).off('mouseup mousemove');
+        });
     }
 
     updateCoreSize() { // note: small visual bug still present
