@@ -23,7 +23,7 @@ class Row {
         }
         this.editor.rows[this.id - 1].words = 0;
         this.editor.column = 1;
-        let elements = parseToArray(value);
+        let elements = Parsing.parseToArray(value);
         for (var i = 0; i < elements.length; i++) {
             if (i == elements.length - 1) {
                 this.editor.rows[this.id - 1].makeSpan(elements[i], space);
@@ -41,7 +41,7 @@ class Row {
     }
 
     makeSpan(content, space) {
-        let parsedContent = parseToHTML(content);
+        let parsedContent = Parsing.parseToHTML(content);
         let span = document.createElement("span");
         if (space) {
             span.innerHTML = parsedContent + "&nbsp;";
@@ -50,7 +50,7 @@ class Row {
             span.innerHTML = parsedContent;
         }
         span.classList.add("textspan");
-        span.classList.add(getType(content));
+        span.classList.add(Parsing.getType(content));
         span.id = this.id + "_" + (this.words + 1);
         let rowdiv = document.getElementById("row" + this.id);
         rowdiv.appendChild(span);
@@ -108,7 +108,7 @@ class Word {
         this.value = content;
     }
     get type() {
-        return getType(this.value);
+        return Parsing.getType(this.value);
     }
     get hash() {
         return row + "_" + id;

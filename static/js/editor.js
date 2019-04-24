@@ -257,7 +257,7 @@ class Editor {
             if (row == this.currentRowNode) {
                 check += this.remaining;
             }
-            if(parseToHTML(check) != inner) {
+            if(Parsing.parseToHTML(check) != inner) {
                 row.update(false);
             }
         });
