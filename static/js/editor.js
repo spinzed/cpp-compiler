@@ -219,9 +219,7 @@ class Editor {
         this.apparentLetter = this.currentRowNode.content.length;
     }
 
-    clickRow(event) {
-        console.log(event.type);
-        console.log(this)
+    clickRow(event, focus = "force") {
         let elm = $(this.core);
         let xPos = event.pageX - elm.offset().left;
         let yPos = event.pageY - elm.offset().top;
@@ -231,24 +229,24 @@ class Editor {
             this.rows[this.rows.length - 1].focus(this.rows[this.rows.length - 1].content.length);
         }
         else {
-            let row = this.rows[Math.floor(yPos / 20)];
+            let row_id;
+            yPos == 0 ? row_id = 0 : row_id = Math.floor((yPos - 1) / 20);
+            let row = this.rows[row_id];
             row.focus(Math.round(xPos / 8.8) - 1);
         }
-        this.focusInput();
+        focus == "force" ? this.focusInput() : focus == "blur" ? this.input.blur() : null;
     }
 
     detectEvent(event) {
-        console.log(event.type);
-        console.log(this)
+        //setTimeout(() => this.clickRow(event), 0)
         $(this.core).on('mouseup mousemove', (event) => {
-            console.log(event.type)
             if (event.type == 'mouseup') {
-                console.log(this)
-                this.clickRow(event);
+                setTimeout(() => this.clickRow(event), 0)
             } else {
                 // drag
             }
             $(this.core).off('mouseup mousemove');
+            //console.log(event.type)
         });
     }
 
@@ -289,10 +287,10 @@ class Editor {
         this.input.focus();
     }
 
-    refreshInput() {
+    refreshInput(noFocus) {
         this.core.removeChild(this.input);
         this.core.appendChild(this.input);
-        this.input.focus();
+        noFocus != "force" ? this.input.focus() : null;
     }
 
     postInit(updateApparent = true) { // must be run after every change in editor
