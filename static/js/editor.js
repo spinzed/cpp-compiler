@@ -3,10 +3,10 @@ class Editor {
         this.id = id;
         this.node = document.getElementById(this.id);
         this.core = document.getElementById(this.id + "_core");
-        this.input = document.getElementById(this.id + "_input");
         this.rowNode = document.getElementById(this.id + "_rows");
-        this.input.addEventListener("keydown", this.checkForDown.bind(this));
-        this.counter = new LCounter(this, "rowline");
+        this.counter = new LCounter(this);
+        this.caret = new Caret(this);
+        this.caret.input.addEventListener("keydown", this.checkForDown.bind(this));
         $(window).resize(() => { this.updateCoreSize(); }); // updates the window on editor resize, gotta tweak it
         $(this.core).on('mousedown', this.detectEvent.bind(this))
         this.rows = [];
@@ -234,7 +234,7 @@ class Editor {
             let row = this.rows[row_id];
             row.focus(Math.round(xPos / 8.8) - 1);
         }
-        focus == "force" ? this.focusInput() : focus == "blur" ? this.input.blur() : null;
+        focus == "force" ? this.caret.focus() : focus == "blur" ? this.caret.input.blur() : null;
     }
 
     detectEvent(event) {
@@ -278,27 +278,12 @@ class Editor {
         });
     }
 
-    updatePointerPosition() {
-        this.input.style.left = (10 + (8.8 * this.currentRowValue.length)) + "px";
-        this.input.style.top = ((this.currentRow - 1) * 20) + "px";
-    }
-
-    focusInput() {
-        this.input.focus();
-    }
-
-    refreshInput(noFocus) {
-        this.core.removeChild(this.input);
-        this.core.appendChild(this.input);
-        noFocus != "force" ? this.input.focus() : null;
-    }
-
     postInit(updateApparent = true) { // must be run after every change in editor
         updateApparent ? this.updateApparentLetter() : null;
-        this.refreshInput();
+        this.caret.refresh();
         this.updateAll();
         this.counter.update();
-        this.updatePointerPosition();
+        this.caret.updatePosition();
         this.updateCoreSize(); // updates rows of editor to correctly render on screen
     }
     

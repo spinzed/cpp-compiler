@@ -116,9 +116,9 @@ class Word {
 }
 
 class LCounter {
-    constructor(editor, id) {
+    constructor(editor) {
         this.editor = editor;
-        this.node = document.getElementById(this.editor.id + "_" + id);
+        this.node = document.getElementById(this.editor.id + "_rowline");
         this.rows = 0;
     }
 
@@ -136,5 +136,28 @@ class LCounter {
             this.node.appendChild(newr);
             this.rows++;
         }
+    }
+}
+
+class Caret {
+    constructor(editor) {
+        this.editor = editor;
+        this.node = document.getElementById(this.editor.id + "_caret");
+        this.input = document.getElementById(this.editor.id + "_input");
+        this.caret = this.node.getElementsByClassName("caret")[0];
+    }
+    refresh() {
+        this.node.removeChild(this.caret);
+        this.node.removeChild(this.input);
+        this.node.appendChild(this.caret);
+        this.node.appendChild(this.input);
+        this.input.focus();
+    }
+    focus() {
+        this.input.focus();
+    }
+    updatePosition() {
+        this.node.style.left = (10 + (8.8 * this.editor.currentRowValue.length)) + "px";
+        this.node.style.top = ((this.editor.currentRow - 1) * 20) + "px";
     }
 }

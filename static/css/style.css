@@ -76,7 +76,7 @@ header {
     font-size: 16px;
     background-color: #282c34;
 }
-#editor_input {
+#editor_caret {
     position: absolute;
     display: inline-block;
     vertical-align: top;
@@ -88,12 +88,40 @@ header {
     border: 0;
     margin-left: 0px;
     height: 20px;
-    color: white;
     font: inherit;
     font-size: inherit;
     line-height: 20px;
     width: 1px;
     transition: all 0.02s linear;
+}
+#editor_input {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+    resize: none;
+    overflow: hidden;
+    background-color: transparent;
+    outline: none;
+    padding: 0;
+    border: 0;
+    margin-left: 0px;
+    /* color: transparent; */
+    color: white;
+    font: inherit;
+    font-size: inherit;
+    line-height: 20px;
+    width: 1px;
+    /* height: 1px; */
+    height:20px;
+    transition: all 0.02s linear;
+    //pointer-events: none;
+}
+.caret {
+    width: 1px;
+    height: 20px;
+    background-color: #c8c8c8;
+    pointer-events: none;
+    display: none; /* Temporarely */
 }
 #editor_rows {
     flex: 1;

@@ -15,7 +15,10 @@
                 <div id="editor_inner">
                 <div id="editor_rowline"></div>
                 <div id="editor_core">
-                    <textarea id="editor_input" spellcheck="false"></textarea>
+                    <div id="editor_caret">
+                        <textarea id="editor_input" spellcheck="false"></textarea>
+                        <div class=caret></div>
+                    </div>
                     <div id="editor_rows"></div>
                 </div>
             </div>
@@ -23,7 +26,7 @@
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
     <script src="{{ url_for('static', filename='js/editor.js') }}" charset="UTF-8"></script>
-    <script src="{{ url_for('static', filename='js/rows.js') }}" charset="UTF-8"></script>
+    <script src="{{ url_for('static', filename='js/classes.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='js/parsing.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}" charset="UTF-8"></script>
 </body>
