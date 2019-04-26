@@ -93,6 +93,7 @@ header {
     line-height: 20px;
     width: 1px;
     transition: all 0.02s linear;
+    pointer-events: none;
 }
 #editor_input {
     position: relative;
@@ -114,7 +115,7 @@ header {
     /* height: 1px; */
     height:20px;
     transition: all 0.02s linear;
-    //pointer-events: none;
+    pointer-events: none;
 }
 .caret {
     width: 1px;
