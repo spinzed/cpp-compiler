@@ -8,7 +8,7 @@ class Editor {
         this.caret = new Caret(this);
         this.caret.input.addEventListener("keydown", this.checkForDown.bind(this));
         $(window).resize(() => { this.updateCoreSize(); }); // updates the window on editor resize, gotta tweak it
-        $(this.core).on('mousedown', this.detectEvent.bind(this))
+        $(this.core).on('mousedown', this.detectEvent.bind(this));
         this.rows = [];
         this.currentRow = 0; // id of the active row
         this.apparentLetter = 0; // this is used when going up and down rows by arrow keys
@@ -21,7 +21,7 @@ class Editor {
 
     checkForDown(event) {
         let updateApparent = true;
-        let prevent = true;
+        let prevent = true; // for event.preventDefault()
         switch (event.key) {
             case "Enter":
                 this.makeNewRow();
@@ -219,7 +219,7 @@ class Editor {
         this.apparentLetter = this.currentRowNode.content.length;
     }
 
-    clickRow(event, focus = "force") {
+    clickRow(event) {
         let elm = $(this.core);
         let xPos = event.pageX - elm.offset().left;
         let yPos = event.pageY - elm.offset().top;
@@ -234,14 +234,15 @@ class Editor {
             let row = this.rows[row_id];
             row.focus(Math.round(xPos / 8.8) - 1);
         }
-        focus == "force" ? this.caret.focus() : focus == "blur" ? this.caret.input.blur() : null;
+        this.caret.blink();
+        this.caret.input.focus();
     }
 
     detectEvent(event) {
-        //setTimeout(() => this.clickRow(event), 0)
+        setTimeout(() => this.clickRow(event), 0)
         $(this.core).on('mouseup mousemove', (event) => {
             if (event.type == 'mouseup') {
-                setTimeout(() => this.clickRow(event), 0)
+                // setTimeout(() => this.clickRow(event), 0)
             } else {
                 // drag
             }
@@ -280,7 +281,7 @@ class Editor {
 
     postInit(updateApparent = true) { // must be run after every change in editor
         updateApparent ? this.updateApparentLetter() : null;
-        this.caret.refresh();
+        this.caret.blink();
         this.updateAll();
         this.counter.update();
         this.caret.updatePosition();
