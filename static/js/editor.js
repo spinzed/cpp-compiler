@@ -219,7 +219,7 @@ class Editor {
         this.apparentLetter = this.currentRowNode.content.length;
     }
 
-    clickRow(event) {
+    clickRow(event, focus = true) {
         let elm = $(this.core);
         let xPos = event.pageX - elm.offset().left;
         let yPos = event.pageY - elm.offset().top;
@@ -235,25 +235,28 @@ class Editor {
             row.focus(Math.round(xPos / 8.8) - 1);
         }
         this.caret.blink();
-        this.caret.input.focus();
+        focus ? this.caret.input.focus() : null;
     }
 
-    detectEvent(event) {
-        setTimeout(() => this.clickRow(event), 0)
-        $(this.core).on('mouseup mousemove', (event) => {
+    detectEvent(event) { // depending on click event, configures eventListeners for input
+        setTimeout(() => this.clickRow(event, false), 0);
+        let functionvar = this.checkForDown.bind(this); // had to put the function in a var so I can remove eventListener
+        document.addEventListener("keydown", functionvar);
+        $(document).on('mouseup mousemove', (event) => {
             if (event.type == 'mouseup') {
-                // setTimeout(() => this.clickRow(event), 0)
+                $(document).off('mouseup mousemove');
+                document.removeEventListener("keydown", functionvar);
+                this.caret.input.focus();
             } else {
-                // drag
+                setTimeout(() => this.clickRow(event, false), 0);
             }
-            $(this.core).off('mouseup mousemove');
             //console.log(event.type)
         });
     }
 
     updateCoreSize() { // note: small visual bug still present
         let inner = document.getElementById("editor_inner");
-        let height = $(this.node).height()
+        let height = $(this.node).height();
         if (this.rows.length * 20 + height - 20 >= height) {
             inner.style.height = (this.rows.length * 20 + height - 20) + "px";
         }
