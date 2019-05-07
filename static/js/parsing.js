@@ -22,16 +22,16 @@ class Parsing {
     static parseToHTML(value) {
         let result = value;
         result = this.replaceAll(result, " ", "&nbsp;");
-        result = result.replace("<", "&lt;");
-        result = result.replace(">", "&gt;");
+        result = this.replaceAll(result, "<", "&lt;");
+        result = this.replaceAll(result, ">", "&gt;");
         return result;
     }
 
     static parseFromHTML(value) {
         let result = value;
         result = this.replaceAll(result, "&nbsp;", " ");
-        result = result.replace("&lt;", "<");
-        result = result.replace("&gt;", ">");
+        result = this.replaceAll(result, "<", "&lt;");
+        result = this.replaceAll(result, "&gt;", ">");
         return result;
     }
 

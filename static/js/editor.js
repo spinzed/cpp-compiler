@@ -15,8 +15,73 @@ class Editor {
         this.remaining = "";
 
         // VVV initialize editor for use
-        this.makeNewRow(); // init first row
+        this.makeRow(); // init first row
         this.counter.update();
+    }
+
+    detectEvent(event) { // depending on click event, configures eventListeners for input
+        setTimeout(() => this.clickRow(event, false), 0);
+        this.boundCheckDown = this.eventCheckDown.bind(this); // had to put the function in a var so I can remove eventListener
+        document.addEventListener("keydown", this.boundCheckDown);
+        let elm = $(this.core);
+        this.xPosFormer = event.pageX - elm.offset().left;
+        this.yPosFormer = event.pageY - elm.offset().top;
+        // ^^ this code above is executed once on mousedown event
+
+        $(document).on('mouseup mousemove', (event) => {
+            if (event.type == 'mouseup') {
+                this.xPosNew = event.pageX - elm.offset().left;
+                this.yPosNew = event.pageY - elm.offset().top;
+                this.xPosNew < 0 ? this.xPosNew = 0 : null;
+                this.yPosNew < 0 ? this.yPosNew = 0 : null;
+                $(document).off('mouseup mousemove');
+                document.removeEventListener("keydown", this.boundCheckDown);
+                this.caret.input.focus();
+                // ^^ this code above is executed once on mousedown event
+            } else {
+                this.xPosNew = event.pageX - elm.offset().left;
+                this.yPosNew = event.pageY - elm.offset().top;
+                this.xPosNew < 0 ? this.xPosNew = 0 : null;
+                this.yPosNew < 0 ? this.yPosNew = 0 : null;
+                setTimeout(() => this.clickRow(event, false), 0);
+                // ^^ this code above is executed once on mousedown event
+            }
+            //console.log(event.type)
+        });
+    }
+
+    eventCheckDown(event) {
+        let functionvar = this.checkForDown.bind(this); // had to put the function in a var so I can remove eventListener
+        let startx = Math.ceil((this.xPosFormer) / 8.8);
+        let endx = Math.ceil((this.xPosNew) / 8.8);
+        let starty = Math.ceil((this.yPosFormer) / 20);
+        let endy = Math.ceil((this.yPosNew) / 20);
+        //console.log(starty, endy)
+        let maxx, minx, maxy, miny;
+        startx >= endx ? maxx = startx : minx = startx;
+        endx > startx ? maxx = endx : minx = endx;
+        starty >= endy ? maxy = starty : miny = starty;
+        endy > starty ? maxy = endy : miny = endy;
+        
+        let oldRem = this.remaining;
+        this.currentRowValue += this.remaining;
+        for (let i = miny + 1; i <= maxy; i++) {
+            this.deleteRow(miny + 1);
+        }
+        this.focusRow(miny);
+        this.currentRowNode.splitContent(startx);
+        this.remaining = oldRem;
+        this.checkForDown(event);
+
+        // VV Deinit this stuff
+        this.xPosFormer = undefined;
+        this.yPosFormer = undefined;
+        this.xPosNew = undefined;
+        this.yPosNew = undefined;
+        $(document).off('mouseup mousemove');
+        document.removeEventListener("keydown", this.boundCheckDown);
+        this.caret.input.focus();
+        this.postInit();
     }
 
     checkForDown(event) {
@@ -24,12 +89,12 @@ class Editor {
         let prevent = true; // for event.preventDefault()
         switch (event.key) {
             case "Enter":
-                this.makeNewRow();
+                this.makeRow();
                 let lastInPrev = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
                 let pair = "";
                 lastInPrev == "(" ? pair = ")" : lastInPrev == "[" ? pair = "]" : lastInPrev == "{" ? pair = "}" : pair = "other";
                 if (this.remaining[0] == pair && pair != "other") { // it will run if theres a backet pair in row before
-                    this.makeNewRow();
+                    this.makeRow();
                     for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
                         this.currentRowValue += "    "; // inserts tab for every tab in row before
                     }
@@ -46,7 +111,7 @@ class Editor {
                 break;
             case "Backspace":
                 if (this.currentRowValue == "" && this.currentRow != 1) {
-                    this.deleteLine();
+                    this.deleteRow();
                 }
                 else {
                     let decoy = "";
@@ -71,7 +136,7 @@ class Editor {
                 else if (this.rows.length != this.currentRow) {
                     this.remaining = this.rows[ed.currentRow].content;
                     ed.currentRow++;
-                    this.deleteLine();
+                    this.deleteRow();
                 }
                 break;
             case "Tab":
@@ -142,7 +207,7 @@ class Editor {
                 if (event.ctrlKey && event.shiftKey) { // gotta make this more proffesional
                     switch(event.key) {
                         case "K":
-                            this.deleteLine()
+                            this.deleteRow()
                             this.remaining = "";
                             break;
                         default:
@@ -160,7 +225,7 @@ class Editor {
         this.postInit(updateApparent); // refreshes the editor, must be run after every change in the editor
     }
 
-    makeNewRow() {
+    makeRow() {
         this.shiftRowsDown(); // this will take care of everything if the row isnt the last one
 
         if (this.rows.length == this.currentRow) { // it will do this is this is the last row
@@ -171,18 +236,20 @@ class Editor {
         this.currentRow++;
     }
 
-    deleteLine(targetedRow = this.currentRow) {
+    deleteRow(targetedRow = this.currentRow) {
         let targetedRowDiv = document.getElementById("row" + targetedRow);
         this.rowNode.removeChild(targetedRowDiv);
+        this.rows.splice(targetedRow - 1, 1);
 
-        this.rows.splice(targetedRow - 1, 1)
-
-        this.currentRow--;
+        this.currentRow = targetedRow - 1;
         this.shiftRowsUp();
     }
 
     shiftRowsUp() {
+        //console.log(this.rows)
+        //console.log(this.currentRow, this.rows.length)
         for (var i = this.currentRow; i < this.rows.length; i++) {
+            //console.log(i)
             this.rows[i].updateNode(i + 1);
         }
     }
@@ -201,6 +268,12 @@ class Editor {
                 this.rows[i - 1].content = "";
             }
         }
+    }
+
+    focusRow(id) {
+        this.currentRowValue = this.currentRowValue + this.remaining;
+        this.remaining = "";
+        this.currentRow = id;
     }
 
     nextRow() { //updates row before switching, may need to rework it
@@ -236,22 +309,6 @@ class Editor {
         }
         this.caret.blink();
         focus ? this.caret.input.focus() : null;
-    }
-
-    detectEvent(event) { // depending on click event, configures eventListeners for input
-        setTimeout(() => this.clickRow(event, false), 0);
-        let functionvar = this.checkForDown.bind(this); // had to put the function in a var so I can remove eventListener
-        document.addEventListener("keydown", functionvar);
-        $(document).on('mouseup mousemove', (event) => {
-            if (event.type == 'mouseup') {
-                $(document).off('mouseup mousemove');
-                document.removeEventListener("keydown", functionvar);
-                this.caret.input.focus();
-            } else {
-                setTimeout(() => this.clickRow(event, false), 0);
-            }
-            //console.log(event.type)
-        });
     }
 
     updateCoreSize() { // note: small visual bug still present
