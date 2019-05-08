@@ -7,6 +7,7 @@ def index():
     if request.method == "POST":
         code = request.get_json()["kod"]
         print(code)
+        return code
     return render_template("index.html", req=request)
 
 if __name__ == "__main__":
