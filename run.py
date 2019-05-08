@@ -7,8 +7,6 @@ def index():
     if request.method == "POST":
         code = request.get_json()["kod"]
         print(code)
-    elif request.method == "GET":
-        return "saki"
     return render_template("index.html", req=request)
 
 if __name__ == "__main__":
