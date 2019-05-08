@@ -9,7 +9,9 @@
 <body>
     <header></header>
     <div class="bodyrest">
-        <div id="sidebar"></div>
+        <div id="sidebar">
+            <button id="submit_code">Submit</button>
+        </div>
         <div id="editor">
             <div id="editor_scroll">
                 <div id="editor_inner">
@@ -24,9 +26,11 @@
         </div>
     </div>
     <script src="https://code.jquery.com/jquery-3.3.1.js" integrity="sha256-2Kok7MbOyxpgUVvAk/HJ2jigOSYS2auK4Pfzbm7uH60=" crossorigin="anonymous"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="{{ url_for('static', filename='js/editor.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='js/classes.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='js/parsing.js') }}" charset="UTF-8"></script>
+    <script src="{{ url_for('static', filename='js/axios.js') }}" charset="UTF-8"></script>
     <script src="{{ url_for('static', filename='js/app.js') }}" charset="UTF-8"></script>
 </body>
 </html>
