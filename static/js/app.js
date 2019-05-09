@@ -1,5 +1,6 @@
 const ed = new Editor("editor");
 const submit = new Submit(ed);
+const output = new Output(ed);
 
 // To activate editors's features, you just need to make an instance of the
 // editor class. The only attribute is the ID of the core editor div.

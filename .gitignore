@@ -3,6 +3,7 @@ __pycache__/
 *.bat
 result.txt
 compile.cpp
+program.exe
 
 # Spinzed's files
 test/

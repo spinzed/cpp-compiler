@@ -178,16 +178,33 @@ class Caret {
     }
 }
 class Submit {
-    constructor(ed) {
-        this.editor = ed;
+    constructor(editor) {
+        this.editor = editor;
         const btn = document.getElementById("submit_code");
         btn.addEventListener("mousedown", () => {
             console.log("sending")
             axios.post("/", {
                 kod: this.editor.packData()
             })
-            .then(response => console.log(response.data))
+            .then(response => {
+                console.log(response.data);
+                output.node.style.display = "block";
+                let arr = response.data.split("\n");
+                output.codeNode.innerHTML = "";
+                for (let i = 0; i < arr.length; i++) {
+                    i != 0 ? output.codeNode.innerHTML += "<br/>" : null;
+                    output.codeNode.innerHTML += arr[i];
+                }
+            })
             .catch(err => console.error(err));
         })
+    }
+}
+
+class Output {
+    constructor(editor) {
+        this.editor = editor;
+        this.node = document.getElementById("output");
+        this.codeNode = document.getElementById("output_text")
     }
 }
