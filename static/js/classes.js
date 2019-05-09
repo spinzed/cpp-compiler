@@ -178,19 +178,30 @@ class Submit {
         this.editor = editor;
         const btn = document.getElementById("submit_code");
         btn.addEventListener("mousedown", () => {
-            console.log("sending")
+            // console.log("sending...")
+            // let start = new Date();
             axios.post("/", {
                 kod: this.editor.packData()
             })
             .then(response => {
-                console.log(response.data);
                 output.node.style.display = "block";
-                let arr = response.data.split("\n");
                 output.codeNode.innerHTML = "";
+                let arr = response.data.split("\n");
+
+                if (arr[0] == "success") {
+                    output.node.style.color = "white";
+                } else if (arr[0] == "error") {
+                    output.codeNode.style.color = "red";
+                } else {
+                    console.error("unknown outcome")
+                }
+                arr.shift()
                 for (let i = 0; i < arr.length; i++) {
                     i != 0 ? output.codeNode.innerHTML += "<br/>" : null;
                     output.codeNode.innerHTML += arr[i];
                 }
+                // let end = new Date() - start;
+                // console.log("execution time: " + end + "ms")
             })
             .catch(err => console.error(err));
         })

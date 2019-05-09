@@ -1,0 +1,4 @@
+compile.cpp: In function 'int main()':
+compile.cpp:6:5: error: expected ';' before 'return'
+     return 0;
+     ^~~~~~
