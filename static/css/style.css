@@ -177,3 +177,26 @@ header {
     color: white;
     font-family: inherit;
 }
+
+#submit_code {
+    width: 150px;
+    height: 60px;
+    margin-right: auto;
+    margin-left: auto;
+    display: block;
+    color: #ffffff;
+    background-color: #696969;
+    border: #6e6e6e 2px outset;
+    margin-top: 25px;
+}
+#submit_code:active {
+    border: none;
+    background-color: #808080;
+    border: #948d8d 2px outset;
+}
+#submit_code:focus {
+    outline: none;
+}
+#submit_code:hover {
+    cursor: pointer;
+}

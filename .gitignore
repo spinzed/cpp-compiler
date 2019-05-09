@@ -1,9 +1,10 @@
 # General
 __pycache__/
 *.bat
-result.txt
 compile.cpp
 program.exe
+result.txt
+error.txt
 
 # Spinzed's files
 test/
