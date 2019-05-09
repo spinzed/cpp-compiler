@@ -347,7 +347,7 @@ class Editor {
                 check += this.remaining;
             }
             if(Parsing.parseToHTML(check) != inner) {
-                row.update(false);
+                row.update();
             }
         });
     }

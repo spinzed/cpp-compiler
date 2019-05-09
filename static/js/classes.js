@@ -10,12 +10,11 @@ class Row {
         this.editor.rowNode.appendChild(this.node);
     }
 
-    update(space, forceRemaining = false) { // Parses input field and puts its content into spans
+    update(forceRemaining = false) { // Parses input field and puts its content into spans
         let value = "";
         if (this.id == this.editor.currentRow || forceRemaining == true) {
             value = this.editor.rows[this.id - 1].content + this.editor.remaining;
-        }
-        else {
+        } else {
             value = this.editor.rows[this.id - 1].content;
         }
         while (this.node.firstChild) {
@@ -24,12 +23,12 @@ class Row {
         this.editor.rows[this.id - 1].words = 0;
         this.editor.column = 1;
         let elements = Parsing.parseToArray(value);
-        for (var i = 0; i < elements.length; i++) {
-            if (i == elements.length - 1) {
-                this.editor.rows[this.id - 1].makeSpan(elements[i], space);
+        for (var i = 0; i < elements.length; i++) { // creates spans for every word. Its possible to force word type
+            if (elements.length > 2 && elements[0] == "#include" && "<\"".includes(elements[2][0]) && i != 0) {
+                this.editor.rows[this.id - 1].makeSpan(elements[i], "string");
             }
             else {
-                this.editor.rows[this.id - 1].makeSpan(elements[i], false);
+                this.editor.rows[this.id - 1].makeSpan(elements[i]); // default
             }
         }
         if (this.id == this.editor.currentRow) {
@@ -40,18 +39,15 @@ class Row {
         }
     }
 
-    makeSpan(content, space) {
+    makeSpan(content, forcedType = "") {
         let parsedContent = Parsing.parseToHTML(content);
         let span = document.createElement("span");
-        if (space) {
-            span.innerHTML = parsedContent + "&nbsp;";
-        }
-        else {
-            span.innerHTML = parsedContent;
-        }
+
+        span.innerHTML = parsedContent;
         span.classList.add("textspan");
-        span.classList.add(Parsing.getType(content));
+        forcedType == "" ? span.classList.add(Parsing.getType(content)) : span.classList.add(forcedType);
         span.id = this.id + "_" + (this.words + 1);
+
         let rowdiv = document.getElementById("row" + this.id);
         rowdiv.appendChild(span);
         this.words++;

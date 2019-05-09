@@ -1,7 +1,7 @@
 class Parsing {
     static getType(string) {
-        let signs = [";", "=", "@", "!", "?", "|", ":", "&", ">"];
-        let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "string", "do", "void", "if", "for", "do", "while", "var", "static", "inline"];
+        let signs = [";", "=", "@", "!", "?", "|", ":", "&", "<", ">"];
+        let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "string", "do", "void", "if", "for", "do", "while", "var", "static", "inline", "return"];
         let digits = [];
         for (let i = 0; i < 10; i++) { digits.push(String(i)); }
         if (signs.includes(string)) {
@@ -45,8 +45,8 @@ class Parsing {
 
     static parseToArray(string) {
         let arr = [string];
-        let signs = ["(", ")", ";", "=", "@", "!", "?", "|", ":", "&", ">"];
-        let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "string", "do", "void", "if", "for", "do", "while", "var", "static", "inline"];
+        let signs = ["(", ")", ";", "=", "@", "!", "?", "|", ":", "&", "<", ">"];
+        let keywords = ["#include", "using", "namespace", "int", "float", "bool", "char", "string", "do", "void", "if", "for", "do", "while", "var", "static", "inline", "return"];
         let digits = [];
         for (let i = 0; i < 10; i++) { digits.push(String(i)); } // digits
         let special = ["\"", "'"];
@@ -74,12 +74,12 @@ class Parsing {
                 }
             }
         });
-        if (arr.length > 1 && arr[0] == "#include") {
-            if (arr[1][1] == "<" || arr[1][1] == "\"") {
-                for (let i = 2; i < arr.length; i++) {
-                    arr[1] += arr[i];
+        if (arr.length > 2 && arr[0] == "#include") {
+            if (arr[2] == "<" || arr[2][0] == "\"") {
+                for (let i = 3; i < arr.length; i++) {
+                    arr[2] += arr[i];
                 }
-                arr.splice(2, arr.length - 2);
+                arr.splice(3, arr.length - 3);
             }
         }
 
