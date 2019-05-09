@@ -1,10 +1,16 @@
-# Spinzed's files
-.vscode/
-test/
-node_test/
-*.code-workspace
+# General
 __pycache__/
 *.bat
+result.txt
+compile.cpp
+
+# Spinzed's files
+test/
+node_test/
+
+# VSCode
+.vscode/
+*.code-workspace
 
 #venv
 venv/

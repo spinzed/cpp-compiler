@@ -352,6 +352,16 @@ class Editor {
         });
     }
 
+    packData() {
+        let result = ``;
+        for (let i = 0; i < this.rows.length; i++) {
+            i != 0 ? result += "\n" : null;
+            result += this.rows[i].content;
+            this.rows[i].id == this.currentRow ? result += this.remaining : null;
+        }
+        return result;
+    }
+
     postInit(updateApparent = true) { // must be run after every change in editor
         updateApparent ? this.updateApparentLetter() : null;
         this.caret.blink();

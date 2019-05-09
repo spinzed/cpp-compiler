@@ -177,3 +177,17 @@ class Caret {
         this.node.style.top = ((this.editor.currentRow - 1) * 20) + "px";
     }
 }
+class Submit {
+    constructor(ed) {
+        this.editor = ed;
+        const btn = document.getElementById("submit_code");
+        btn.addEventListener("mousedown", () => {
+            console.log("sending")
+            axios.post("/", {
+                kod: this.editor.packData()
+            })
+            .then(response => console.log(response.data))
+            .catch(err => console.error(err));
+        })
+    }
+}
