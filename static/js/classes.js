@@ -144,7 +144,7 @@ class Caret {
         this.caret.className += "caret";
         $(window).on('mousedown', this.updateStatus.bind(this)); // this is used to kill the caret
     }
-    _blink = () => { // this should be a private method but JS is fucked so..
+    ablink() { // this should be a private method but JS is fucked so..
         !this.node.contains(this.caret) ? this.node.insertBefore(this.caret, this.input) : null;
         this.blinkTimeout = setTimeout(() => {
             try {
@@ -155,8 +155,8 @@ class Caret {
     }
     blink() { // it will start blinking and it will refresh it if it is already blinking
         this.kill();
-        this._blink()
-        this.blinkInterval = setInterval(this._blink, 1000);
+        this.ablink();
+        this.blinkInterval = setInterval(this.ablink, 1000);
     }
     kill() { // makes the caret stop blinking
         clearInterval(this.blinkInterval);
@@ -189,7 +189,7 @@ class Submit {
                 let arr = response.data.split("\n");
 
                 if (arr[0] == "success") {
-                    output.node.style.color = "white";
+                    output.codeNode.style.color = "white";
                 } else if (arr[0] == "error") {
                     output.codeNode.style.color = "red";
                 } else {

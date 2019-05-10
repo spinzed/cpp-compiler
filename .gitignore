@@ -5,6 +5,7 @@ compile.cpp
 program.exe
 result.txt
 error.txt
+program.out
 
 # Spinzed's files
 test/
