@@ -144,7 +144,7 @@ class Caret {
         this.caret.className += "caret";
         $(window).on('mousedown', this.updateStatus.bind(this)); // this is used to kill the caret
     }
-    ablink() { // this should be a private method but JS is fucked so..
+    _blink() { // this should be a private method but JS is fucked so..
         !this.node.contains(this.caret) ? this.node.insertBefore(this.caret, this.input) : null;
         this.blinkTimeout = setTimeout(() => {
             try {
@@ -155,7 +155,7 @@ class Caret {
     }
     blink() { // it will start blinking and it will refresh it if it is already blinking
         this.kill();
-        this.ablink();
+        this._blink();
         this.blinkInterval = setInterval(this.ablink, 1000);
     }
     kill() { // makes the caret stop blinking

@@ -7,9 +7,10 @@ app = Flask(__name__)
 def index():
     if request.method == "POST":
         code = request.get_json()["kod"]
+        filename = "program.exe" if os.name == "nt" else "./program.out"
         with open("compile.cpp", "w") as f:
             f.write(code)
-        if os.system("g++ compile.cpp -o program.exe 2> error.txt"):
+        if os.system(f"g++ compile.cpp -o {filename} 2> error.txt"):
             print("error")
             with open("error.txt", "r+") as f:
                 error = ""
@@ -22,7 +23,7 @@ def index():
             return error  
         else:
             print("success")
-            os.system("program.exe > result.txt")
+            os.system(f"{filename} > result.txt")
             output = ""
             with open("result.txt", "r+") as f:
                 lines = f.readlines()
