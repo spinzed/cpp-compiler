@@ -18,8 +18,7 @@ def index():
                 for i, j in enumerate(lines):
                     if i == 0:
                         error += "error"
-                    error += "\n"
-                    error += j
+                    error += "\n" + j
             return error  
         else:
             print("success")
@@ -30,8 +29,7 @@ def index():
                 for i, j in enumerate(lines):
                     if i == 0:
                         output += "success"
-                    output += "\n"
-                    output += j
+                    output += "\n" + j
             return output
     return render_template("index.html", req=request)
 

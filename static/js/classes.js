@@ -156,7 +156,7 @@ class Caret {
     blink() { // it will start blinking and it will refresh it if it is already blinking
         this.kill();
         this._blink();
-        this.blinkInterval = setInterval(this.ablink, 1000);
+        this.blinkInterval = setInterval(this._blink.bind(this), 1000);
     }
     kill() { // makes the caret stop blinking
         clearInterval(this.blinkInterval);
@@ -176,34 +176,47 @@ class Caret {
 class Submit {
     constructor(editor) {
         this.editor = editor;
-        const btn = document.getElementById("submit_code");
-        btn.addEventListener("mousedown", () => {
-            // console.log("sending...")
-            // let start = new Date();
-            axios.post("/", {
-                kod: this.editor.packData()
-            })
-            .then(response => {
-                output.node.style.display = "block";
-                output.codeNode.innerHTML = "";
-                let arr = response.data.split("\n");
+        this.btn = document.getElementById("submit_code");
+        this.isProcessing = false;
+        this.btn.addEventListener("mousedown", () => {
+            if (!this.isProcessing) {
+                if (window.debug) {
+                    console.log("sending...")
+                    let start = new Date();
+                }
+                axios.post("/", {
+                    kod: this.editor.packData()
+                })
+                .then(response => {
+                    output.node.style.display = "block";
+                    output.codeNode.innerHTML = "";
+                    let arr = response.data.split("\n");
 
-                if (arr[0] == "success") {
-                    output.codeNode.style.color = "white";
-                } else if (arr[0] == "error") {
-                    output.codeNode.style.color = "red";
-                } else {
-                    console.error("unknown outcome")
-                }
-                arr.shift()
-                for (let i = 0; i < arr.length; i++) {
-                    i != 0 ? output.codeNode.innerHTML += "<br/>" : null;
-                    output.codeNode.innerHTML += arr[i];
-                }
-                // let end = new Date() - start;
-                // console.log("execution time: " + end + "ms")
-            })
-            .catch(err => console.error(err));
+                    if (arr[0] == "success") {
+                        output.codeNode.style.color = "white";
+                    } else if (arr[0] == "error") {
+                        output.codeNode.style.color = "red";
+                    } else {
+                        console.error("unknown outcome")
+                    }
+                    arr.shift()
+                    for (let i = 0; i < arr.length; i++) {
+                        i != 0 ? output.codeNode.innerHTML += "<br/>" : null;
+                        output.codeNode.innerHTML += arr[i];
+                    }
+                    if (window.debug) {
+                        let end = new Date() - start;
+                        console.log("execution time: " + end + "ms")
+                    }
+                    this.isProcessing = false;
+                })
+                .catch(err => {
+                    console.error(err);
+                    this.isProcessing = false;
+                })
+            } else {
+                console.log("already processing, try again later");
+            }
         })
     }
 }

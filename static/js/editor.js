@@ -87,139 +87,162 @@ class Editor {
     checkForDown(event) {
         let updateApparent = true;
         let prevent = true; // for event.preventDefault()
-        switch (event.key) {
-            case "Enter":
-                this.makeRow();
-                let lastInPrev = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
-                let pair = "";
-                lastInPrev == "(" ? pair = ")" : lastInPrev == "[" ? pair = "]" : lastInPrev == "{" ? pair = "}" : pair = "other";
-                if (this.remaining[0] == pair && pair != "other") { // it will run if theres a backet pair in row before
+        if (!event.ctrlKey && !event.altKey) {
+            switch (event.key) {
+                case "Enter":
                     this.makeRow();
-                    for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
+                    let lastInPrev = this.rows[this.currentRow - 2].content[this.rows[this.currentRow - 2].content.length - 1];
+                    let pair = "";
+                    lastInPrev == "(" ? pair = ")" : lastInPrev == "[" ? pair = "]" : lastInPrev == "{" ? pair = "}" : pair = "other";
+                    if (this.remaining[0] == pair && pair != "other") { // it will run if theres a backet pair in row before
+                        this.makeRow();
+                        for (let i = 0; i < this.rows[this.currentRow - 3].countTabs(); i++) {
+                            this.currentRowValue += "    "; // inserts tab for every tab in row before
+                        }
+                        this.currentRowValue += this.remaining;
+                        this.remaining = "";
+                        this.currentRow--;
+                    }
+                    // VVV add additional stuff to current row
+                    for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
                         this.currentRowValue += "    "; // inserts tab for every tab in row before
                     }
-                    this.currentRowValue += this.remaining;
-                    this.remaining = "";
-                    this.currentRow--;
-                }
-                // VVV add additional stuff to current row
-                for (let i = 0; i < this.rows[this.currentRow - 2].countTabs(); i++) {
-                    this.currentRowValue += "    "; // inserts tab for every tab in row before
-                }
-                "([{".includes(lastInPrev) ? this.currentRowValue += "    " : null;
-                //  ^^ will add a tab if theres bracet in row before, it will alwazs work
-                break;
-            case "Backspace":
-                if (this.currentRowValue == "" && this.currentRow != 1) {
-                    this.deleteRow();
-                }
-                else {
-                    let decoy = "";
-                    for (var i = 0; i < this.currentRowValue.length; i++) {
-                        if (i != this.currentRowValue.length - 1) {
-                            decoy += this.currentRowValue[i];
-                        }
+                    "([{".includes(lastInPrev) ? this.currentRowValue += "    " : null;
+                    //  ^^ will add a tab if theres bracet in row before, it will alwazs work
+                    break;
+                case "Backspace":
+                    if (this.currentRowValue == "" && this.currentRow != 1) {
+                        this.deleteRow();
                     }
-                    this.currentRowValue = decoy;
-                }
-                break;
-            case "Delete":
-                if (this.remaining != "") {
-                    let decoy = "";
-                    for (var i = 0; i < this.remaining.length; i++) {
-                        if (i != 0) {
-                            decoy += this.remaining[i];
+                    else {
+                        let decoy = "";
+                        for (var i = 0; i < this.currentRowValue.length; i++) {
+                            if (i != this.currentRowValue.length - 1) {
+                                decoy += this.currentRowValue[i];
+                            }
                         }
+                        this.currentRowValue = decoy;
                     }
-                    this.remaining = decoy;
-                }
-                else if (this.rows.length != this.currentRow) {
-                    this.remaining = this.rows[ed.currentRow].content;
-                    ed.currentRow++;
-                    this.deleteRow();
-                }
-                break;
-            case "Tab":
-                this.currentRowValue += "    ";
-                break;
-            case "(":
-            case "[":
-            case "{":
-                let decoy = this.remaining;
-                this.currentRowValue += event.key;
-                let other = "";
-                event.key == "(" ? other = ")" : event.key == "[" ? other = "]" : other = "}";
-                this.remaining = other + decoy;
-                break;
-            case ")":
-            case "]":
-            case "}":
-                if (this.remaining[0] == event.key) {
-                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
-                }
-                else {
+                    break;
+                case "Delete":
+                    if (this.remaining != "") {
+                        let decoy = "";
+                        for (var i = 0; i < this.remaining.length; i++) {
+                            if (i != 0) {
+                                decoy += this.remaining[i];
+                            }
+                        }
+                        this.remaining = decoy;
+                    }
+                    else if (this.rows.length != this.currentRow) {
+                        this.remaining = this.rows[ed.currentRow].content;
+                        ed.currentRow++;
+                        this.deleteRow();
+                    }
+                    break;
+                case "Tab":
+                    this.currentRowValue += "    ";
+                    break;
+                case "(":
+                case "[":
+                case "{":
+                    let decoy = this.remaining;
                     this.currentRowValue += event.key;
-                }
-                break;
-            case "\"":
-            case "\'":
-                if (this.remaining[0] == event.key) {
-                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
-                }
-                else {
-                    event.key == "\"" ? this.currentRowValue += "\"\"" : this.currentRowValue += "\'\'";
-                    this.currentRowNode.splitContent(this.currentRowValue.length - 1);
-                }
-                break;
-            case "ArrowLeft":
-                if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
-                    this.previousRow();
-                }
-                else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
-                    this.currentRowNode.splitContent(this.currentRowValue.length - 1);
-                }
-                break;
-            case "ArrowRight":
-                if (this.remaining == "" && this.currentRow != this.rows.length) {
-                    this.currentRow++;
-                    this.remaining = this.currentRowValue;
-                    this.currentRowValue = "";
-                }
-                else {
-                    this.currentRowNode.splitContent(this.currentRowValue.length + 1);
-                }
-                break;
-            case "ArrowUp":
-                if (this.currentRow != 1) {
-                    this.previousRow();
-                    this.currentRowNode.splitContent(this.apparentLetter);
-                }
-                updateApparent = false;
-                break;
-            case "ArrowDown":
-                if (this.currentRow != this.rows.length) {
-                    this.nextRow();
-                    this.currentRowNode.splitContent(this.apparentLetter);
-                }
-                updateApparent = false;
-                break;
-            default:
-                if (event.ctrlKey && event.shiftKey) { // gotta make this more proffesional
-                    switch(event.key) {
-                        case "K":
-                            this.deleteRow()
-                            this.remaining = "";
-                            break;
-                        default:
-                            prevent = false;
+                    let other = "";
+                    event.key == "(" ? other = ")" : event.key == "[" ? other = "]" : other = "}";
+                    this.remaining = other + decoy;
+                    break;
+                case ")":
+                case "]":
+                case "}":
+                    if (this.remaining[0] == event.key) {
+                        this.currentRowNode.splitContent(this.currentRowValue.length + 1);
                     }
-                }
-                else if (event.altKey) {
+                    else {
+                        this.currentRowValue += event.key;
+                    }
+                    break;
+                case "\"":
+                case "\'":
+                    if (this.remaining[0] == event.key) {
+                        this.currentRowNode.splitContent(this.currentRowValue.length + 1);
+                    }
+                    else {
+                        event.key == "\"" ? this.currentRowValue += "\"\"" : this.currentRowValue += "\'\'";
+                        this.currentRowNode.splitContent(this.currentRowValue.length - 1);
+                    }
+                    break;
+                case "ArrowLeft":
+                    if (this.currentRowValue == "" && this.currentRow != 1) { // if its start of the row
+                        this.previousRow();
+                    }
+                    else if (this.currentRowValue != "") { // takes last letter from content and puts to remaining
+                        this.currentRowNode.splitContent(this.currentRowValue.length - 1);
+                    }
+                    break;
+                case "ArrowRight":
+                    if (this.remaining == "" && this.currentRow != this.rows.length) {
+                        this.currentRow++;
+                        this.remaining = this.currentRowValue;
+                        this.currentRowValue = "";
+                    }
+                    else {
+                        this.currentRowNode.splitContent(this.currentRowValue.length + 1);
+                    }
+                    break;
+                case "ArrowUp":
+                    if (this.currentRow != 1) {
+                        this.previousRow();
+                        this.currentRowNode.splitContent(this.apparentLetter);
+                    }
+                    updateApparent = false;
+                    break;
+                case "ArrowDown":
+                    if (this.currentRow != this.rows.length) {
+                        this.nextRow();
+                        this.currentRowNode.splitContent(this.apparentLetter);
+                    }
+                    updateApparent = false;
+                    break;
+                default:
+                    if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?<>|".includes(event.key.toLowerCase())) {
+                        this.currentRowValue += event.key;
+                    }
+            }
+        } else if (event.ctrlKey && !event.shiftKey) {
+            switch (event.key) {
+                case "v":
+                    this.caret.input.focus();
+                    document.execCommand("paste");
+                    setTimeout(() => {
+                        let value = this.caret.input.value;
+                        this.caret.input.value = "";
+                        let arr = value.split("\n");
+                        let rem = this.remaining;
+                        this.remaining = "";
+                        for (let i = 0; i < arr.length; i++) {
+                            let word = arr[i];
+                            i != 0 ? this.makeRow() : null;
+                            this.currentRowValue += word;
+                            i == arr.length - 1 ? this.currentRowValue += rem : null;
+                        }
+                        this.currentRowNode.splitContent(this.currentRowValue.length - rem.length)
+                        this.postInit(); // had to run it here again because of timeout
+                    }, 0);
                     prevent = false;
-                }
-                else if (" qwertzuiopasdfghjklyxcvbnm1234567890=+-*\\/_.,;:#@!?<>|".includes(event.key.toLowerCase())) {
-                    this.currentRowValue += event.key;
-                }
+                    break;
+            }
+        } else if (event.ctrlKey && event.shiftKey) {
+            switch (event.key) {
+                case "K":
+                    this.deleteRow();
+                    this.remaining = "";
+                    break;
+                default:
+                    prevent = false;
+            }
+        } else if (event.altKey) {
+            prevent = false;
         }
         prevent ? event.preventDefault() : null;
         this.postInit(updateApparent); // refreshes the editor, must be run after every change in the editor

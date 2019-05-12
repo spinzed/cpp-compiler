@@ -67,6 +67,7 @@ header {
     width: 100%;
     height: 100%;
     display: flex;
+    position: relative;
 }
 #editor_core {
     position: relative;
